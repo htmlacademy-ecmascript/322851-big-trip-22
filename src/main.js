@@ -1,5 +1,7 @@
 import BodyPresenter from './presenter/body-presenter.js';
 
-const presenter = new BodyPresenter(document.querySelector('.trip-events'));
+const tripContainer = document.querySelector('.trip-events');
+
+const presenter = new BodyPresenter({'container': tripContainer});
 
 presenter.init();

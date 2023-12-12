@@ -17,8 +17,8 @@ export default class BodyPresenter {
   tripInfoContainer = new TripInfo();
   eventForm = new EventForm();
 
-  constructor(listContainer) {
-    this.listContainer = listContainer;
+  constructor({ container }) {
+    this.listContainer = container;
   }
 
   init() {
@@ -29,9 +29,9 @@ export default class BodyPresenter {
     render(new SortForm(), this.listContainer);
     render(this.listComponent, this.listContainer);
     render(this.eventForm, this.listComponent.getElement());
-    render(new EventFormHeader(), this.eventForm.getElement());
-    render(new EventFormDetails(), this.eventForm.getElement());
-    render(new EventFormDestination(), this.eventForm.getElement());
+    render(new EventFormHeader(), this.eventForm.getElement().querySelector('form'));
+    render(new EventFormDetails(), this.eventForm.getElement().querySelector('form'));
+    render(new EventFormDestination(), this.eventForm.getElement().querySelector('form'));
 
     for (let i = 0; i < 3; i++) {
       render(new TripPoint(), this.listComponent.getElement());
