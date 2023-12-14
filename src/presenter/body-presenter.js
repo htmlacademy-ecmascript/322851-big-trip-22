@@ -1,4 +1,3 @@
-
 import TripPoint from '../view/trip-point.js';
 import TripList from '../view/trip-list.js';
 import SortForm from '../view/sort-form.js';
@@ -17,8 +16,9 @@ export default class BodyPresenter {
   tripInfoContainer = new TripInfo();
   eventForm = new EventForm();
 
-  constructor({ container }) {
+  constructor({ container, tripsModel }) {
     this.listContainer = container;
+    this.tripPoints = [...tripsModel.getTripPoints()];
   }
 
   init() {
