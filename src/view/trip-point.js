@@ -1,12 +1,12 @@
 import { createElement } from '../render.js';
 
-const createTripPointTemplate = () => (`<li class="trip-events__item">
+const createTripPointTemplate = ({type,}) => (`<li class="trip-events__item">
   <div class="event">
     <time class="event__date" datetime="2019-03-18">MAR 18</time>
     <div class="event__type">
-      <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
+      <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">Taxi Amsterdam</h3>
+    <h3 class="event__title">${type[0].toUppercase() + type.slice(1)} {}}</h3>
     <div class="event__schedule">
       <p class="event__time">
         <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
@@ -40,8 +40,12 @@ const createTripPointTemplate = () => (`<li class="trip-events__item">
 
 
 export default class TripPoint {
+  constructor({ content }) {
+    this.content = content;
+  }
+
   getTemplate() {
-    return createTripPointTemplate();
+    return createTripPointTemplate(this.content);
   }
 
   getElement() {

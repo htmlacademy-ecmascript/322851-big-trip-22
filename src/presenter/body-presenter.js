@@ -18,7 +18,7 @@ export default class BodyPresenter {
 
   constructor({ container, tripsModel }) {
     this.listContainer = container;
-    this.tripPoints = [...tripsModel.getTripPoints()];
+    this.tripsModel = tripsModel;
   }
 
   init() {
@@ -34,7 +34,10 @@ export default class BodyPresenter {
     render(new EventFormDestination(), this.eventForm.getElement().querySelector('form'));
 
     for (let i = 0; i < 3; i++) {
-      render(new TripPoint(), this.listComponent.getElement());
+      const tripPoint = this.tripsModel.getTripPoints()[i];
+      const destination = this.tripsModel.getDestinations(tripPoint.destination);
+      const offers = this.tripsModel.getOffers(tripPoint.type);
+      render(new TripPoint({point: tripPoint, destination: destination, offers: offers}), this.listComponent.getElement());
     }
   }
 }
