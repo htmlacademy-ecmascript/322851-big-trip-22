@@ -4,6 +4,8 @@ import { parseDate } from '../utils.js';
 
 const renderDestinationOptions = (destinations) => destinations.map(({name}) => `<option value="${name}"></option>`).join('');
 
+const addDate = (date, format) => (date) ? parseDate(date, format) : '';
+
 const createEventFormHeaderTemplate = (point, destinations) => (`<header class="event__header">
 <div class="event__type-wrapper">
   <label class="event__type  event__type-btn" for="event-type-toggle-${point.id}">
@@ -68,7 +70,7 @@ const createEventFormHeaderTemplate = (point, destinations) => (`<header class="
   <label class="event__label  event__type-output" for="event-destination-${point.id}">
   ${point.type}
   </label>
-  <input class="event__input  event__input--destination" id="event-destination-${point.id}" type="text" name="event-destination" value="${destinations.filter((item) => item.id === point.destination)[0].name}" list="destination-list-1">
+  <input class="event__input  event__input--destination" id="event-destination-${point.id}" type="text" name="event-destination" value="${destinations.filter((item) => item.id === point.destination)[0]?.name ?? ''}" list="destination-list-1">
   <datalist id="destination-list-1">
   ${renderDestinationOptions(destinations)}
   </datalist>
@@ -76,10 +78,10 @@ const createEventFormHeaderTemplate = (point, destinations) => (`<header class="
 
 <div class="event__field-group  event__field-group--time">
   <label class="visually-hidden" for="event-start-time-${point.id}">From</label>
-  <input class="event__input  event__input--time" id="event-start-time-${point.id}" type="text" name="event-start-time" value="${parseDate(point.dateFrom, CALENDAR_FORMAT)}">
+  <input class="event__input  event__input--time" id="event-start-time-${point.id}" type="text" name="event-start-time" value="${addDate(point.dateFrom, CALENDAR_FORMAT)}">
   &mdash;
   <label class="visually-hidden" for="event-end-time-${point.id}">To</label>
-  <input class="event__input  event__input--time" id="event-end-time-${point.id}" type="text" name="event-end-time" value="${parseDate(point.dateTo, CALENDAR_FORMAT)}">
+  <input class="event__input  event__input--time" id="event-end-time-${point.id}" type="text" name="event-end-time" value="${addDate(point.dateTo, CALENDAR_FORMAT)}">
 </div>
 
 <div class="event__field-group  event__field-group--price">
@@ -96,7 +98,7 @@ const createEventFormHeaderTemplate = (point, destinations) => (`<header class="
 
 
 export default class EventFormHeader {
-  constructor({point = BLANK_POINT, destinations}) {
+  constructor({ point = BLANK_POINT, destinations = '' }) {
     this.point = point;
     this.destinations = destinations;
   }

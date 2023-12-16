@@ -7,7 +7,6 @@ import TripTitle from '../view/trip-title.js';
 import TripInfo from '../view/trip-info.js';
 import EventForm from '../view/event-form.js';
 import EventFormHeader from '../view/event-form-header.js';
-import EventFormDestination from '../view/event-form-destination.js';
 import EventFormDetails from '../view/event-form-details.js';
 import { render, RenderPosition } from '../render.js';
 
@@ -40,11 +39,9 @@ export default class BodyPresenter {
         destination: destination,
         offers: offers
       };
-      console.log(content);
       if (i === 0) {
         render(new EventFormHeader({'point': content.point, 'destinations': this.tripsModel.getDestinations()}), this.eventForm.getElement().querySelector('form'));
-        render(new EventFormDetails({'point': content.point, 'offers': this.tripsModel.getOffers()}), this.eventForm.getElement().querySelector('form'));
-        render(new EventFormDestination({'content': content.destination}), this.eventForm.getElement().querySelector('form'));
+        render(new EventFormDetails({'point': content.point, 'offers': this.tripsModel.getOffers(), 'destination': content.destination}), this.eventForm.getElement().querySelector('form'));
       } else {
         render(new TripPoint({'content': content}), this.listComponent.getElement());
       }
