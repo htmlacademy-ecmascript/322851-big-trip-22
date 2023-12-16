@@ -1,3 +1,11 @@
+import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration.js';
+import { DURATION_FORMAT } from './const';
+import customParseFormat from 'dayjs/plugin/customParseFormat.js';
+
+dayjs.extend(customParseFormat);
+dayjs.extend(duration);
+
 const getRandomArrayElement = (items) => items[Math.floor(Math.random() * items.length)];
 
 const getRandomInteger = (a, b) => {
@@ -22,4 +30,12 @@ const generateRandomIndex = (a, b) => {
   };
 };
 
-export { getRandomArrayElement, getRandomInteger, generateRandomIndex };
+const parseDate = (date, format) => dayjs(date).format(format);
+
+const evaluateDuration = (dateFrom, dateTo) => {
+  const tripDuration = dayjs.duration(dayjs(dateTo).diff(dayjs(dateFrom))).format(DURATION_FORMAT);
+  return tripDuration.replace('00D 00H ', '').replace('00D ', '');
+};
+
+
+export { getRandomArrayElement, getRandomInteger, generateRandomIndex, parseDate, evaluateDuration };

@@ -4,7 +4,7 @@ import { IMAGES_URL } from '../const.js';
 
 const generatePictures = (name) => {
   let num = 0;
-  return Array.from({length: getRandomInteger(1,5)}, () => ({'src': `${IMAGES_URL}${name}`, 'description': `${name}-${num++}`}));
+  return Array.from({length: getRandomInteger(1,5)}, () => ({'src': `${IMAGES_URL}${getRandomInteger(1,150)}`, 'description': `${name}-${num++}`}));
 };
 
 const mockDestinations = [
@@ -41,7 +41,7 @@ const mockDestinations = [
   {
     'id': 6,
     'name': 'Some Good Hotel',
-    'description': '',
+    'description': 'Distinctively streamline unique processes rather than magnetic mindshare. Intrinsicly recaptiualize client-centered "outside the box".',
     'pictures': []
   },
   {

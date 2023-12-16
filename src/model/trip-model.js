@@ -1,10 +1,9 @@
-import { getRandomTripPoint } from '../mock/trips-points.js';
-import { TRIP_NUM } from '../const.js';
+import { getRandomTripPoints } from '../mock/trip-points.js';
 import { mockDestinations } from '../mock/destination.js';
 import { mockOffers } from '../mock/offers.js';
 
 export default class TripsModel {
-  tripPoints = Array.from({length: TRIP_NUM}, getRandomTripPoint);
+  tripPoints = getRandomTripPoints();
   destinations = mockDestinations;
   offers = mockOffers;
 
