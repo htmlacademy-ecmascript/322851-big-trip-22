@@ -19,7 +19,7 @@ const createTripPointTemplate = ({point, destination, offers}) => `<li class="tr
   <div class="event">
     <time class="event__date" datetime="2019-03-18">${parseDate(point.dateFrom, DATE_FORMAT)}</time>
     <div class="event__type">
-      <img class="event__type-icon" width="42" height="42" src="img/icons/${point.type}.png" alt="Event type icon">
+      <img class="event__type-icon" width="42" height="42" src="img/icons/${point.type.toLowerCase()}.png" alt="Event type icon">
     </div>
     <h3 class="event__title">${point.type} ${destination.name}</h3>
     <div class="event__schedule">

@@ -1,8 +1,16 @@
-import { BLANK_POINT, CALENDAR_FORMAT } from '../const.js';
+import { BLANK_POINT, CALENDAR_FORMAT, TRIP_TYPES } from '../const.js';
 import { createElement } from '../render.js';
 import { parseDate } from '../utils.js';
 
 const renderDestinationOptions = (destinations) => destinations.map(({name}) => `<option value="${name}"></option>`).join('');
+
+const renderOptions = ({type, id}) => TRIP_TYPES.map((item) => {
+  const isChecked = (type === item) ? 'checked' : '';
+  return `<div class="event__type-item">
+    <input id="event-type-${item.toLowerCase()}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${item.toLowerCase()}" ${isChecked}>
+    <label class="event__type-label  event__type-label--${item.toLowerCase()}" for="event-type-${item.toLowerCase()}-${id}">${item}</label>
+  </div>`;
+}).join('');
 
 const addDate = (date, format) => (date) ? parseDate(date, format) : '';
 
@@ -10,58 +18,14 @@ const createEventFormHeaderTemplate = (point, destinations) => (`<header class="
 <div class="event__type-wrapper">
   <label class="event__type  event__type-btn" for="event-type-toggle-${point.id}">
     <span class="visually-hidden">Choose event type</span>
-    <img class="event__type-icon" width="17" height="17" src="img/icons/${point.type}.png" alt="Event type icon">
+    <img class="event__type-icon" width="17" height="17" src="/img/icons/${point.type.toLowerCase()}.png" alt="Event type icon">
   </label>
   <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${point.id}" type="checkbox">
 
   <div class="event__type-list">
     <fieldset class="event__type-group">
       <legend class="visually-hidden">Event type</legend>
-
-      <div class="event__type-item">
-        <input id="event-type-taxi-${point.id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="taxi">
-        <label class="event__type-label  event__type-label--taxi" for="event-type-taxi-${point.id}">Taxi</label>
-      </div>
-
-      <div class="event__type-item">
-        <input id="event-type-bus-${point.id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus">
-        <label class="event__type-label  event__type-label--bus" for="event-type-bus-${point.id}">Bus</label>
-      </div>
-
-      <div class="event__type-item">
-        <input id="event-type-train-${point.id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="train">
-        <label class="event__type-label  event__type-label--train" for="event-type-train-${point.id}">Train</label>
-      </div>
-
-      <div class="event__type-item">
-        <input id="event-type-ship-${point.id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="ship">
-        <label class="event__type-label  event__type-label--ship" for="event-type-ship-${point.id}">Ship</label>
-      </div>
-
-      <div class="event__type-item">
-        <input id="event-type-drive-${point.id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="drive">
-        <label class="event__type-label  event__type-label--drive" for="event-type-drive-${point.id}">Drive</label>
-      </div>
-
-      <div class="event__type-item">
-        <input id="event-type-flight-${point.id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
-        <label class="event__type-label  event__type-label--flight" for="event-type-flight-${point.id}">Flight</label>
-      </div>
-
-      <div class="event__type-item">
-        <input id="event-type-check-in-${point.id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="check-in">
-        <label class="event__type-label  event__type-label--check-in" for="event-type-check-in-${point.id}">Check-in</label>
-      </div>
-
-      <div class="event__type-item">
-        <input id="event-type-sightseeing-${point.id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="sightseeing">
-        <label class="event__type-label  event__type-label--sightseeing" for="event-type-sightseeing-${point.id}">Sightseeing</label>
-      </div>
-
-      <div class="event__type-item">
-        <input id="event-type-restaurant-${point.id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="restaurant">
-        <label class="event__type-label  event__type-label--restaurant" for="event-type-restaurant-${point.id}">Restaurant</label>
-      </div>
+      ${renderOptions(point)}
     </fieldset>
   </div>
 </div>
