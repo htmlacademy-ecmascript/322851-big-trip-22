@@ -1,5 +1,5 @@
 import { BLANK_POINT, CALENDAR_FORMAT, TRIP_TYPES } from '../const.js';
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { parseDate } from '../utils.js';
 
 const renderDestinationOptions = (destinations) => destinations.map(({name}) => `<option value="${name}"></option>`).join('');
@@ -61,25 +61,17 @@ const createEventFormHeaderTemplate = (point, destinations) => (`<header class="
 </header>`);
 
 
-export default class EventFormHeader {
+export default class EventFormHeader extends AbstractView {
+  #element = null;
+
   constructor({ point = BLANK_POINT, destinations = [] }) {
+    super();
     this.point = point;
     this.destinations = destinations;
   }
 
-  getTemplate() {
+  get template() {
     return createEventFormHeaderTemplate(this.point, this.destinations);
   }
 
-  getElement() {
-
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
 }

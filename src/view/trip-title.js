@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const createTripTitleTemplate = () => (`<div class="trip-info__main">
 <h1 class="trip-info__title">Amsterdam &mdash; Chamonix &mdash; Geneva</h1>
@@ -7,20 +7,10 @@ const createTripTitleTemplate = () => (`<div class="trip-info__main">
 </div>`);
 
 
-export default class TripTitle {
-  getTemplate() {
+export default class TripTitle extends AbstractView {
+  #element = null;
+
+  get template() {
     return createTripTitleTemplate();
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

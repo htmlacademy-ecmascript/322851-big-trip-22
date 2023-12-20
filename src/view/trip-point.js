@@ -1,5 +1,5 @@
 import { DATE_FORMAT, TIME_FORMAT } from '../const.js';
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { evaluateDuration, parseDate } from '../utils.js';
 
 const createOffersElements = (offers, selectedOffers) => offers.map(({id, title, price}) => {
@@ -50,23 +50,15 @@ const createTripPointTemplate = ({point, destination, offers}) => `<li class="tr
 </li>`;
 
 
-export default class TripPoint {
+export default class TripPoint extends AbstractView {
+  #element = null;
+
   constructor({ content }) {
+    super();
     this.content = content;
   }
 
-  getTemplate() {
+  get template() {
     return createTripPointTemplate(this.content);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }
