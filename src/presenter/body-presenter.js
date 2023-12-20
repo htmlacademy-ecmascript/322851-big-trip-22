@@ -14,6 +14,7 @@ export default class BodyPresenter {
   listComponent = new TripList();
   tripInfoContainer = new TripInfo();
   eventForm = new EventForm();
+  eventFormElement = this.eventForm.getElement().querySelector('form');
 
   constructor({ container, tripsModel }) {
     this.listContainer = container;
@@ -40,10 +41,10 @@ export default class BodyPresenter {
         offers: offers
       };
       if (i === 0) {
-        render(new EventFormHeader({'point': content.point, 'destinations': this.tripsModel.getDestinations()}), this.eventForm.getElement().querySelector('form'));
-        render(new EventFormDetails({'point': content.point, 'offers': this.tripsModel.getOffers(), 'destination': content.destination}), this.eventForm.getElement().querySelector('form'));
+        render(new EventFormHeader({point: content.point, destinations: this.tripsModel.getDestinations()}), this.eventFormElement);
+        render(new EventFormDetails({point: content.point, offers: this.tripsModel.getOffers(), destination: content.destination}), this.eventForm.getElement().querySelector('form'));
       } else {
-        render(new TripPoint({'content': content}), this.listComponent.getElement());
+        render(new TripPoint({content: content}), this.listComponent.getElement());
       }
 
     }

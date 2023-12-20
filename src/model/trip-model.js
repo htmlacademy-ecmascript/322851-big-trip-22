@@ -12,10 +12,10 @@ export default class TripsModel {
   }
 
   getDestinations(id = 'all') {
-    return (id === 'all') ? this.destinations : this.destinations.filter((item) => item.id === id)[0];
+    return (id === 'all') ? this.destinations : this.destinations.find((item) => item.id === id);
   }
 
   getOffers(type = 'all') {
-    return (type === 'all') ? this.offers : this.offers.filter((item) => item.type === type.toLocaleLowerCase())[0].offers;
+    return (type === 'all') ? this.offers : this.offers.find((item) => item.type === type.toLocaleLowerCase()).offers;
   }
 }

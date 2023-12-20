@@ -45,7 +45,7 @@ const renderDestination = (destination) => {
 };
 
 const createEventFormDetailsTemplate = (point, offers, destination) => {
-  offers = offers.filter((item) => item.type === point.type.toLocaleLowerCase())[0].offers;
+  offers = offers.find((item) => item.type === point.type.toLocaleLowerCase()).offers;
   return `<section class="event__details">
   ${renderOffers(point.offers, offers)}
   ${renderDestination(destination)}

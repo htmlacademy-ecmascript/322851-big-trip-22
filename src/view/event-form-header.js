@@ -62,7 +62,7 @@ const createEventFormHeaderTemplate = (point, destinations) => (`<header class="
 
 
 export default class EventFormHeader {
-  constructor({ point = BLANK_POINT, destinations = '' }) {
+  constructor({ point = BLANK_POINT, destinations = [] }) {
     this.point = point;
     this.destinations = destinations;
   }
