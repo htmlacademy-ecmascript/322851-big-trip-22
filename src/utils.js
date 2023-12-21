@@ -37,5 +37,7 @@ const evaluateDuration = (dateFrom, dateTo) => {
   return tripDuration.replace('00D 00H ', '').replace('00D ', '');
 };
 
+const isEscapeKey = (evt) => evt.key === 'Escape';
 
-export { getRandomArrayElement, getRandomInteger, generateRandomIndex, parseDate, evaluateDuration };
+
+export { getRandomArrayElement, getRandomInteger, generateRandomIndex, parseDate, evaluateDuration, isEscapeKey };

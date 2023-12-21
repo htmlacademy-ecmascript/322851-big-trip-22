@@ -1,5 +1,5 @@
 import { BLANK_POINT } from '../const.js';
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const createOffersList = (selectedOffers, offers) => offers.map((offer) => {
   const isChecked = (selectedOffers.some((id) => id === offer.id)) ? 'checked' : '';
@@ -53,26 +53,19 @@ const createEventFormDetailsTemplate = (point, offers, destination) => {
 };
 
 
-export default class EventFormDetails {
+export default class EditFormDetails extends AbstractView {
+  #point = null;
+  #offers = null;
+  #destination = null;
 
   constructor({point = BLANK_POINT, offers, destination }) {
-    this.point = point;
-    this.offers = offers;
-    this.destination = destination;
+    super();
+    this.#point = point;
+    this.#offers = offers;
+    this.#destination = destination;
   }
 
-  getTemplate() {
-    return createEventFormDetailsTemplate(this.point, this.offers, this.destination);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createEventFormDetailsTemplate(this.#point, this.#offers, this.#destination);
   }
 }

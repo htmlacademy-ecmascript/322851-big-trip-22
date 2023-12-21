@@ -1,5 +1,5 @@
 import { BLANK_POINT, CALENDAR_FORMAT, TRIP_TYPES } from '../const.js';
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { parseDate } from '../utils.js';
 
 const renderDestinationOptions = (destinations) => destinations.map(({name}) => `<option value="${name}"></option>`).join('');
@@ -57,29 +57,32 @@ const createEventFormHeaderTemplate = (point, destinations) => (`<header class="
 </div>
 
 <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-<button class="event__reset-btn" type="reset">Cancel</button>
+<button class="event__reset-btn" type="reset">Delete</button>
+<button class="event__rollup-btn" type="button"><span class="visually-hidden">Open event</span></button>
 </header>`);
 
 
-export default class EventFormHeader {
-  constructor({ point = BLANK_POINT, destinations = [] }) {
-    this.point = point;
-    this.destinations = destinations;
+export default class EditFormHeader extends AbstractView {
+  #point = null;
+  #destinations = null;
+  #handleClick = null;
+
+  constructor({ point = BLANK_POINT, destinations = [], onClick }) {
+    super();
+    this.#point = point;
+    this.#destinations = destinations;
+    this.#handleClick = onClick;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeEventForm);
+
   }
 
-  getTemplate() {
-    return createEventFormHeaderTemplate(this.point, this.destinations);
+  get template() {
+    return createEventFormHeaderTemplate(this.#point, this.#destinations);
   }
 
-  getElement() {
+  #closeEventForm = (evt) => {
+    evt.preventDefault();
+    this.#handleClick();
+  };
 
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
 }
