@@ -53,17 +53,19 @@ const createEventFormDetailsTemplate = (point, offers, destination) => {
 };
 
 
-export default class EventFormDetails extends AbstractView {
-  #element = null;
+export default class EditFormDetails extends AbstractView {
+  #point = null;
+  #offers = null;
+  #destination = null;
 
   constructor({point = BLANK_POINT, offers, destination }) {
     super();
-    this.point = point;
-    this.offers = offers;
-    this.destination = destination;
+    this.#point = point;
+    this.#offers = offers;
+    this.#destination = destination;
   }
 
   get template() {
-    return createEventFormDetailsTemplate(this.point, this.offers, this.destination);
+    return createEventFormDetailsTemplate(this.#point, this.#offers, this.#destination);
   }
 }

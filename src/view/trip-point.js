@@ -51,14 +51,22 @@ const createTripPointTemplate = ({point, destination, offers}) => `<li class="tr
 
 
 export default class TripPoint extends AbstractView {
-  #element = null;
+  #content = null;
+  #handleClick = null;
 
-  constructor({ content }) {
+  constructor({ content, onClick }) {
     super();
-    this.content = content;
+    this.#content = content;
+    this.#handleClick = onClick;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#openEventForm);
   }
 
   get template() {
-    return createTripPointTemplate(this.content);
+    return createTripPointTemplate(this.#content);
   }
+
+  #openEventForm = (evt) => {
+    evt.preventDefault();
+    this.#handleClick();
+  };
 }

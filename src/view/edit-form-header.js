@@ -57,21 +57,32 @@ const createEventFormHeaderTemplate = (point, destinations) => (`<header class="
 </div>
 
 <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-<button class="event__reset-btn" type="reset">Cancel</button>
+<button class="event__reset-btn" type="reset">Delete</button>
+<button class="event__rollup-btn" type="button"><span class="visually-hidden">Open event</span></button>
 </header>`);
 
 
-export default class EventFormHeader extends AbstractView {
-  #element = null;
+export default class EditFormHeader extends AbstractView {
+  #point = null;
+  #destinations = null;
+  #handleClick = null;
 
-  constructor({ point = BLANK_POINT, destinations = [] }) {
+  constructor({ point = BLANK_POINT, destinations = [], onClick }) {
     super();
-    this.point = point;
-    this.destinations = destinations;
+    this.#point = point;
+    this.#destinations = destinations;
+    this.#handleClick = onClick;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeEventForm);
+
   }
 
   get template() {
-    return createEventFormHeaderTemplate(this.point, this.destinations);
+    return createEventFormHeaderTemplate(this.#point, this.#destinations);
   }
+
+  #closeEventForm = (evt) => {
+    evt.preventDefault();
+    this.#handleClick();
+  };
 
 }
