@@ -27,7 +27,6 @@ const createFilterFormTemplate = () => (`<form class="trip-filters" action="#" m
 
 
 export default class FilterForm extends AbstractView {
-  #element = null;
 
   get template() {
     return createFilterFormTemplate();

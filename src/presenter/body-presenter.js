@@ -23,7 +23,7 @@ export default class BodyPresenter {
   constructor({ container, tripsModel }) {
     this.#listContainer = container;
     this.#tripsModel = tripsModel;
-    this.#tripsPoints = [...this.#tripsModel.getTripPoints()];
+    this.#tripsPoints = [...this.#tripsModel.tripPoints];
   }
 
   init() {

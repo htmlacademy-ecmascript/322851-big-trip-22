@@ -6,7 +6,6 @@ Total: &euro;&nbsp;<span class="trip-info__cost-value">1230</span>
 
 
 export default class TotalCost extends AbstractView {
-  #element = null;
 
   get template() {
     return createTotalCostTemplate();
