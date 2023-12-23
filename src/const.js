@@ -17,6 +17,22 @@ const BLANK_POINT = { 'id': 0,
   'isFavorite': false
 };
 
+const EmptyListMessages = {
+  EVERYTHING: 'Click New Event to create your first point',
+  PAST: 'There are no past events now',
+  PRESENT: 'There are no present events now',
+  FUTURE: 'There are no future events now'
+};
+
+const FilterTypes = {
+  ALL: 'all',
+  OVERDUE: 'overdue',
+  TODAY: 'today',
+  FAVORITES: 'favorites',
+  REPEATING: 'repeating',
+  ARCHIVE: 'archive',
+};
+
 export {
   TRIP_TYPES,
   TRIP_NUM,
@@ -25,6 +41,8 @@ export {
   TIME_FORMAT,
   DURATION_FORMAT,
   CALENDAR_FORMAT,
-  BLANK_POINT
+  BLANK_POINT,
+  EmptyListMessages,
+  FilterTypes
 };
 

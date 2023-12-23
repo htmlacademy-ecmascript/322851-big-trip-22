@@ -5,11 +5,13 @@ import FilterForm from '../view/filter-form.js';
 import TotalCost from '../view/total-cost.js';
 import TripTitle from '../view/trip-title.js';
 import TripInfo from '../view/trip-info.js';
-import EditForm from '../view/edit-form.js';
-import EditFormHeader from '../view/edit-form-header.js';
-import EditFormDetails from '../view/edit-form-details.js';
+import EventForm from '../view/event-form.js';
+import EventFormHeader from '../view/event-form-header.js';
+import EventFormDetails from '../view/event-form-details.js';
 import { render, RenderPosition, replace } from '../framework/render.js';
 import { isEscapeKey } from '../utils.js';
+import ArrowButton from '../view/event-form-arrow-button.js';
+import EventFormDeleteButton from '../view/event-form-delete-button.js';
 
 export default class BodyPresenter {
   #listComponent = new TripList();
@@ -58,18 +60,28 @@ export default class BodyPresenter {
       }
     }
 
-    const eventForm = new EditForm({onSubmit: () => {
+    const eventForm = new EventForm({onSubmit: () => {
       replaceFormToPoint();
       document.removeEventListener('keydown', escKeyDownHandler);
     }});
+
     const eventFormElement = eventForm.element.querySelector('form');
 
-    render(new EditFormHeader({point: content.point, destinations: this.#tripsModel.getDestinations(), onClick: () => {
+    const formHeader = new EventFormHeader({point: content.point, destinations: this.#tripsModel.getDestinations()});
+
+    const formDetails = new EventFormDetails({point: content.point, offers: this.#tripsModel.getOffers(), destination: content.destination});
+
+    const arrowButton = new ArrowButton({ onClick: () => {
       replaceFormToPoint();
       document.removeEventListener('keydown', escKeyDownHandler);
-    }}), eventFormElement);
+    } });
 
-    render(new EditFormDetails({point: content.point, offers: this.#tripsModel.getOffers(), destination: content.destination}), eventFormElement);
+    const deleteButton = new EventFormDeleteButton();
+
+    render(deleteButton, formHeader.element);
+    render(arrowButton, formHeader.element);
+    render(formHeader, eventFormElement);
+    render(formDetails, eventFormElement);
 
     const tripPoint = new TripPoint({content: content, onClick: () => {
       replacePointToForm();
