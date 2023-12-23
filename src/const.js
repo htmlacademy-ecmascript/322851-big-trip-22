@@ -25,12 +25,10 @@ const EmptyListMessages = {
 };
 
 const FilterTypes = {
-  ALL: 'all',
-  OVERDUE: 'overdue',
-  TODAY: 'today',
-  FAVORITES: 'favorites',
-  REPEATING: 'repeating',
-  ARCHIVE: 'archive',
+  EVERYTHING: 'everything',
+  PAST: 'past',
+  PRESENT: 'present',
+  FUTURE: 'future'
 };
 
 export {

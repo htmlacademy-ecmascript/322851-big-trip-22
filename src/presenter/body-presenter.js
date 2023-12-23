@@ -9,7 +9,7 @@ import EventForm from '../view/event-form.js';
 import EventFormHeader from '../view/event-form-header.js';
 import EventFormDetails from '../view/event-form-details.js';
 import { render, RenderPosition, replace } from '../framework/render.js';
-import { isEscapeKey } from '../utils.js';
+import { filters, isEscapeKey } from '../utils.js';
 import ArrowButton from '../view/event-form-arrow-button.js';
 import EventFormDeleteButton from '../view/event-form-delete-button.js';
 
@@ -36,13 +36,17 @@ export default class BodyPresenter {
     render(this.#tripInfoContainer, this.#mainElement, RenderPosition.AFTERBEGIN);
     render(new TripTitle(), this.#tripInfoContainer.element);
     render(new TotalCost(), this.#tripInfoContainer.element);
-    render(new FilterForm(), this.#filterContainer);
+    render(new FilterForm({'filters': this.#generateFilters() }), this.#filterContainer);
     render(new SortForm(), this.#listContainer);
     render(this.#listComponent, this.#listContainer);
 
     for (let i = 0; i < this.#tripsPoints.length; i++) {
       this.#renderTripPoint(this.#tripsPoints[i]);
     }
+  }
+
+  #generateFilters() {
+    return Object.entries(filters).map(([ filterName, cb ]) => ({'name': filterName, count: cb(this.#tripsPoints).length}));
   }
 
   #renderTripPoint(point) {

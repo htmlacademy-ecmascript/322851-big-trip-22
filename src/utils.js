@@ -1,10 +1,12 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration.js';
-import { DURATION_FORMAT } from './const';
+import { DURATION_FORMAT, FilterTypes } from './const';
 import customParseFormat from 'dayjs/plugin/customParseFormat.js';
+import isBetween from 'dayjs/plugin/isBetween';
 
 dayjs.extend(customParseFormat);
 dayjs.extend(duration);
+dayjs.extend(isBetween);
 
 const getRandomArrayElement = (items) => items[Math.floor(Math.random() * items.length)];
 
@@ -39,5 +41,12 @@ const evaluateDuration = (dateFrom, dateTo) => {
 
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
+const filters = {
+  [FilterTypes.EVERYTHING]: (points) => points,
+  [FilterTypes.FUTURE]: (points) => points.filter((item) => dayjs().isBefore(dayjs(item.dateFrom))),
+  [FilterTypes.PRESENT]: (points) => points.filter((item) => dayjs().isBetween(dayjs(item.dateTo), dayjs(item.dateFrom))),
+  [FilterTypes.PAST]: (points) => points.filter((item) => dayjs().isAfter(dayjs(item.dateTo)))
+};
 
-export { getRandomArrayElement, getRandomInteger, generateRandomIndex, parseDate, evaluateDuration, isEscapeKey };
+
+export { getRandomArrayElement, getRandomInteger, generateRandomIndex, parseDate, evaluateDuration, isEscapeKey, filters };
