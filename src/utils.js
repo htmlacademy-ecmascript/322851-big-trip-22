@@ -48,5 +48,7 @@ const filters = {
   [FilterTypes.PAST]: (points) => points.filter((item) => dayjs().isAfter(dayjs(item.dateTo)))
 };
 
+const updateItem = (items, updatedItem) => items.map((item) => item.id === updatedItem.id ? updatedItem : item);
 
-export { getRandomArrayElement, getRandomInteger, generateRandomIndex, parseDate, evaluateDuration, isEscapeKey, filters };
+
+export { getRandomArrayElement, getRandomInteger, generateRandomIndex, parseDate, evaluateDuration, isEscapeKey, filters, updateItem };
