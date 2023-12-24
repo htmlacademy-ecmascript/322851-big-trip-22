@@ -3,9 +3,10 @@ import AbstractView from '../framework/view/abstract-view.js';
 
 
 const isFilterDisable = (count) => (count) ? '' : 'disabled';
+const isFilterChecked = (status) => (status) ? 'checked' : '';
 
-const createFilterList = (filters) => filters.map(({name, count}) => `<div class="trip-filters__filter">
-  <input id="filter-${name}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${name}" ${isFilterDisable(count)}>
+const createFilterList = (filters) => filters.map(({name, count, isChecked}) => `<div class="trip-filters__filter">
+  <input id="filter-${name}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${name}" ${isFilterDisable(count)}  ${isFilterChecked(isChecked)}>
   <label class="trip-filters__filter-label" for="filter-${name}">${name}</label>
 </div>
 `).join('');
