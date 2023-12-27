@@ -49,9 +49,9 @@ const filters = {
 };
 
 const sorting = {
-  [SortingTypes.DAY.name]: (points) => points.sort((firstPoint, secondPoint) => dayjs(secondPoint.dateFrom) - dayjs(firstPoint.dateFrom)),
-  [SortingTypes.PRICE.name]: (points) => points.filter((item) => dayjs().isBefore(dayjs(item.dateFrom))),
-  [SortingTypes.TIME.name]: (points) => points.filter((item) => dayjs().isBetween(dayjs(item.dateTo), dayjs(item.dateFrom)))
+  [SortingTypes.DAY.name]: (points) => points.sort((firstPoint, secondPoint) => dayjs(firstPoint.dateFrom) - dayjs(secondPoint.dateFrom)),
+  [SortingTypes.PRICE.name]: (points) => points.sort((firstPoint, secondPoint) => secondPoint.basePrice - firstPoint.basePrice),
+  [SortingTypes.TIME.name]: (points) => points.sort((firstPoint, secondPoint) => dayjs(secondPoint.dateFrom) - dayjs(firstPoint.dateFrom))
 };
 
 const updateItem = (items, updatedItem) => items.map((item) => item.id === updatedItem.id ? updatedItem : item);

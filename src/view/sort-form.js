@@ -24,8 +24,25 @@ ${renderSortList(defaultSortType)}
 
 export default class SortForm extends AbstractView {
   #defaultSortType = SortingTypes.DAY.name;
+  #handleSortChange = null;
+
+  constructor({ onChange }) {
+    super();
+    this.#handleSortChange = onChange;
+    this.element.addEventListener('change', this.#changeSortOrder);
+  }
 
   get template() {
     return createSortFormTemplate(this.#defaultSortType);
   }
+
+  #changeSortOrder = (evt) => {
+    evt.preventDefault();
+    if (evt.target.tagName === 'INPUT') {
+      console.log(evt.target.dataset.sortType);
+      this.#handleSortChange(evt.target.dataset.sortType);
+    }
+  };
+
+
 }

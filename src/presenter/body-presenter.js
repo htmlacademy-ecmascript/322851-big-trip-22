@@ -6,7 +6,7 @@ import TotalCost from '../view/total-cost.js';
 import TripTitle from '../view/trip-title.js';
 import TripInfo from '../view/trip-info.js';
 import { render, RenderPosition } from '../framework/render.js';
-import { filters, updateItem } from '../utils.js';
+import { filters, sorting, updateItem } from '../utils.js';
 import TripPointPresenter from './trip-point-presenter.js';
 import { SortingTypes } from '../const.js';
 
@@ -26,7 +26,9 @@ export default class BodyPresenter {
     this.#listContainer = container;
     this.#tripsModel = tripsModel;
     this.#tripsPoints = [...this.#tripsModel.tripPoints];
-    this.#originalTripsList = [...this.#tripsModel.tripPoints];
+    sorting[this.#currentSortType](this.#tripsPoints);
+    this.#originalTripsList = [...this.#tripsPoints];
+
   }
 
   init() {
@@ -72,7 +74,7 @@ export default class BodyPresenter {
   };
 
   #renderSort() {
-    render(new SortForm(), this.#listContainer);
+    render(new SortForm({onChange: this.#handleSortChange}), this.#listContainer);
   }
 
   #renderFilters() {
@@ -86,5 +88,11 @@ export default class BodyPresenter {
         tripPoint.resetView();
       }
     });
+  };
+
+  #handleSortChange = (name) => {
+    if (this.#currentSortType !== name) {
+      this.#currentSortType = name;
+    }
   };
 }
