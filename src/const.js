@@ -39,6 +39,8 @@ const SortingTypes = {
   OFFER: {name: 'offer', isDisabled: true}
 };
 
+const DEFAULT_SORT_TYPE = SortingTypes.DAY.name;
+
 export {
   TRIP_TYPES,
   TRIP_NUM,
@@ -50,6 +52,7 @@ export {
   BLANK_POINT,
   EmptyListMessages,
   FilterTypes,
-  SortingTypes
+  SortingTypes,
+  DEFAULT_SORT_TYPE
 };
 

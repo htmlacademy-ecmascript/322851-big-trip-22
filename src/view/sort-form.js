@@ -1,4 +1,4 @@
-import { SortingTypes } from '../const.js';
+import { DEFAULT_SORT_TYPE, SortingTypes } from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 
@@ -23,7 +23,7 @@ ${renderSortList(defaultSortType)}
 
 
 export default class SortForm extends AbstractView {
-  #defaultSortType = SortingTypes.DAY.name;
+  #defaultSortType = DEFAULT_SORT_TYPE;
   #handleSortChange = null;
 
   constructor({ onChange }) {

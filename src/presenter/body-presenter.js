@@ -8,7 +8,7 @@ import TripInfo from '../view/trip-info.js';
 import { render, RenderPosition } from '../framework/render.js';
 import { filters, sorting, updateItem } from '../utils.js';
 import TripPointPresenter from './trip-point-presenter.js';
-import { SortingTypes } from '../const.js';
+import { DEFAULT_SORT_TYPE } from '../const.js';
 
 export default class BodyPresenter {
   #listComponent = new TripList();
@@ -20,7 +20,7 @@ export default class BodyPresenter {
   #tripsPoints = null;
   #tripPointPresenters = new Map();
   #originalTripsList = null;
-  #currentSortType = SortingTypes.DAY.name;
+  #currentSortType = DEFAULT_SORT_TYPE;
 
   constructor({ container, tripsModel }) {
     this.#listContainer = container;
