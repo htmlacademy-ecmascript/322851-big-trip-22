@@ -40,6 +40,7 @@ const SortingTypes = {
 };
 
 const DEFAULT_SORT_TYPE = SortingTypes.DAY.name;
+const DEFAULT_FILTER_TYPE = FilterTypes.EVERYTHING;
 
 export {
   TRIP_TYPES,
@@ -53,6 +54,7 @@ export {
   EmptyListMessages,
   FilterTypes,
   SortingTypes,
-  DEFAULT_SORT_TYPE
+  DEFAULT_SORT_TYPE,
+  DEFAULT_FILTER_TYPE
 };
 

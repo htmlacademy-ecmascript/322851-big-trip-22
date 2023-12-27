@@ -8,7 +8,8 @@ import TripInfo from '../view/trip-info.js';
 import { render, RenderPosition, replace } from '../framework/render.js';
 import { filters, sorting, updateItem } from '../utils.js';
 import TripPointPresenter from './trip-point-presenter.js';
-import { DEFAULT_SORT_TYPE } from '../const.js';
+import { DEFAULT_FILTER_TYPE, DEFAULT_SORT_TYPE, EmptyListMessages } from '../const.js';
+import EmptyTripList from '../view/empty-trip-list.js';
 
 export default class BodyPresenter {
   #listComponent = new TripList();
@@ -22,6 +23,7 @@ export default class BodyPresenter {
   #originalTripsList = null;
   #currentSortType = DEFAULT_SORT_TYPE;
   #currentSortView = null;
+  #currentFilterType = DEFAULT_FILTER_TYPE;
 
   constructor({ container, tripsModel }) {
     this.#listContainer = container;
@@ -39,15 +41,23 @@ export default class BodyPresenter {
   #renderBody() {
     this.#renderTripInfo();
     this.#renderFilters();
-    this.#renderSort();
-    render(this.#listComponent, this.#listContainer);
-    this.#renderTripPoints();
+    if (this.#tripsPoints.length) {
+      this.#renderSort();
+      render(this.#listComponent, this.#listContainer);
+      this.#renderTripPoints();
+    } else {
+      this.#renderEmptyPointsList();
+    }
   }
 
   #renderTripInfo() {
     render(this.#tripInfoContainer, this.#mainElement, RenderPosition.AFTERBEGIN);
     render(new TripTitle(), this.#tripInfoContainer.element);
     render(new TotalCost(), this.#tripInfoContainer.element);
+  }
+
+  #renderEmptyPointsList() {
+    render(new EmptyTripList({message: EmptyListMessages[this.#currentFilterType.toUpperCase()]}), this.#listContainer);
   }
 
   #renderTripPoints() {
@@ -87,7 +97,7 @@ export default class BodyPresenter {
   }
 
   #renderFilters() {
-    const generatedFilters = Object.entries(filters).map(([ filterName, cb ], index) => ({name: filterName, count: cb(this.#tripsPoints).length, isChecked: index === 0}));
+    const generatedFilters = Object.entries(filters).map(([ filterName, cb ]) => ({name: filterName, count: cb(this.#tripsPoints).length, isChecked: filterName === DEFAULT_FILTER_TYPE}));
     render(new FilterForm({'filters': generatedFilters , onFilterChange: this.#handleFilterChange}), this.#filterContainer);
   }
 
@@ -109,11 +119,15 @@ export default class BodyPresenter {
   };
 
   #handleFilterChange = (name) => {
-    this.#clearTripPoints();
-    this.#tripsPoints = filters[name](this.#originalTripsList);
-    if (this.#currentSortType !== DEFAULT_SORT_TYPE) {
-      this.#updateSort();
+    if (name !== this.#currentFilterType) {
+      this.#clearTripPoints();
+      this.#currentFilterType = name;
+      this.#tripsPoints = filters[name](this.#originalTripsList);
+      if (this.#currentSortType !== DEFAULT_SORT_TYPE) {
+        this.#updateSort();
+      }
+      this.#renderTripPoints();
     }
-    this.#renderTripPoints();
+
   };
 }
