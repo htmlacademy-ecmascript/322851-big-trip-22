@@ -39,6 +39,12 @@ const evaluateDuration = (dateFrom, dateTo) => {
   return tripDuration.replace('00D 00H ', '').replace('00D ', '');
 };
 
+const compareDurations = (firstPoint, secondPoint) => {
+  const firstPointDuration = dayjs.duration(dayjs(firstPoint.dateTo).diff(dayjs(firstPoint.dateFrom))).asMilliseconds();
+  const secondPointDuration = dayjs.duration(dayjs(secondPoint.dateTo).diff(dayjs(secondPoint.dateFrom))).asMilliseconds();
+  return secondPointDuration - firstPointDuration;
+};
+
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
 const filters = {
@@ -51,7 +57,7 @@ const filters = {
 const sorting = {
   [SortingTypes.DAY.name]: (points) => points.sort((firstPoint, secondPoint) => dayjs(firstPoint.dateFrom) - dayjs(secondPoint.dateFrom)),
   [SortingTypes.PRICE.name]: (points) => points.sort((firstPoint, secondPoint) => secondPoint.basePrice - firstPoint.basePrice),
-  [SortingTypes.TIME.name]: (points) => points.sort((firstPoint, secondPoint) => dayjs(secondPoint.dateFrom) - dayjs(firstPoint.dateFrom))
+  [SortingTypes.TIME.name]: (points) => points.sort((firstPoint, secondPoint) => compareDurations(firstPoint, secondPoint))
 };
 
 const updateItem = (items, updatedItem) => items.map((item) => item.id === updatedItem.id ? updatedItem : item);

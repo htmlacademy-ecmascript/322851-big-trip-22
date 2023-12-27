@@ -39,7 +39,6 @@ export default class SortForm extends AbstractView {
   #changeSortOrder = (evt) => {
     evt.preventDefault();
     if (evt.target.tagName === 'INPUT') {
-      console.log(evt.target.dataset.sortType);
       this.#handleSortChange(evt.target.dataset.sortType);
     }
   };

@@ -63,7 +63,7 @@ export default class BodyPresenter {
   }
 
   #clearTripPoints() {
-    this.#tripPointPresenters.forEach(([, tripPoint]) => tripPoint.destroy());
+    this.#tripPointPresenters.forEach((tripPoint) => tripPoint.destroy());
     this.#tripPointPresenters.clear();
   }
 
@@ -93,6 +93,9 @@ export default class BodyPresenter {
   #handleSortChange = (name) => {
     if (this.#currentSortType !== name) {
       this.#currentSortType = name;
+      this.#clearTripPoints();
+      sorting[name](this.#tripsPoints);
+      this.#renderTripPoints();
     }
   };
 }

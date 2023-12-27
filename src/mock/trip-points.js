@@ -56,7 +56,7 @@ const mockTripPoints = [
     'type': TRIP_TYPES[5],
     'destination': getRandomArrayElement(mockDestinations).id,
     'dateFrom': new Date('10/10/24 16:00').toISOString(),
-    'dateTo': new Date('11/12/24 16:00').toISOString(),
+    'dateTo': new Date('11/05/24 16:00').toISOString(),
     'basePrice': 1600,
     'offers': generateOffers(TRIP_TYPES[5]),
     'isFavorite': true
