@@ -7,7 +7,7 @@ const renderSortItem = (name, isDisabled, defaultSortType) => {
   const isChecked = (defaultSortType === name) ? 'checked' : '';
   return `<div class="trip-sort__item  trip-sort__item--${name}">
   <input id="sort-${name}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" data-sort-type='${name}' value="sort-${name}" ${isDisabled} ${isChecked} >
-  <label class="trip-sort__btn" for="sort-day">${name}</label>
+  <label class="trip-sort__btn" for="sort-${name}">${name}</label>
 </div>`;
 };
 
