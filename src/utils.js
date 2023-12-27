@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration.js';
-import { DURATION_FORMAT, FilterTypes } from './const';
+import { DURATION_FORMAT, FilterTypes, SortingTypes } from './const';
 import customParseFormat from 'dayjs/plugin/customParseFormat.js';
 import isBetween from 'dayjs/plugin/isBetween';
 
@@ -48,7 +48,22 @@ const filters = {
   [FilterTypes.PAST]: (points) => points.filter((item) => dayjs().isAfter(dayjs(item.dateTo)))
 };
 
+const sorting = {
+  [SortingTypes.DAY.name]: (points) => points.sort((firstPoint, secondPoint) => dayjs(secondPoint.dateFrom) - dayjs(firstPoint.dateFrom)),
+  [SortingTypes.PRICE.name]: (points) => points.filter((item) => dayjs().isBefore(dayjs(item.dateFrom))),
+  [SortingTypes.TIME.name]: (points) => points.filter((item) => dayjs().isBetween(dayjs(item.dateTo), dayjs(item.dateFrom)))
+};
+
 const updateItem = (items, updatedItem) => items.map((item) => item.id === updatedItem.id ? updatedItem : item);
 
 
-export { getRandomArrayElement, getRandomInteger, generateRandomIndex, parseDate, evaluateDuration, isEscapeKey, filters, updateItem };
+export {
+  getRandomArrayElement,
+  getRandomInteger,
+  generateRandomIndex,
+  parseDate,
+  evaluateDuration,
+  isEscapeKey,
+  filters,
+  updateItem,
+  sorting };

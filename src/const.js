@@ -31,6 +31,14 @@ const FilterTypes = {
   FUTURE: 'future'
 };
 
+const SortingTypes = {
+  DAY: {name: 'day', isDisabled: false},
+  EVENT: {name: 'event', isDisabled: true},
+  TIME: {name: 'time', isDisabled: false},
+  PRICE: {name: 'price', isDisabled: false},
+  OFFER: {name: 'offer', isDisabled: true}
+};
+
 export {
   TRIP_TYPES,
   TRIP_NUM,
@@ -41,6 +49,7 @@ export {
   CALENDAR_FORMAT,
   BLANK_POINT,
   EmptyListMessages,
-  FilterTypes
+  FilterTypes,
+  SortingTypes
 };
 
