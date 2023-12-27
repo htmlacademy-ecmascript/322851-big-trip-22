@@ -5,7 +5,7 @@ import FilterForm from '../view/filter-form.js';
 import TotalCost from '../view/total-cost.js';
 import TripTitle from '../view/trip-title.js';
 import TripInfo from '../view/trip-info.js';
-import { render, RenderPosition } from '../framework/render.js';
+import { render, RenderPosition, replace } from '../framework/render.js';
 import { filters, sorting, updateItem } from '../utils.js';
 import TripPointPresenter from './trip-point-presenter.js';
 import { DEFAULT_SORT_TYPE } from '../const.js';
@@ -21,12 +21,13 @@ export default class BodyPresenter {
   #tripPointPresenters = new Map();
   #originalTripsList = null;
   #currentSortType = DEFAULT_SORT_TYPE;
+  #currentSortView = null;
 
   constructor({ container, tripsModel }) {
     this.#listContainer = container;
     this.#tripsModel = tripsModel;
     this.#tripsPoints = [...this.#tripsModel.tripPoints];
-    sorting[this.#currentSortType](this.#tripsPoints);
+    sorting[DEFAULT_SORT_TYPE](this.#tripsPoints);
     this.#originalTripsList = [...this.#tripsPoints];
 
   }
@@ -74,12 +75,20 @@ export default class BodyPresenter {
   };
 
   #renderSort() {
-    render(new SortForm({onChange: this.#handleSortChange}), this.#listContainer);
+    this.#currentSortView = new SortForm({onSortChange: this.#handleSortChange});
+    render(this.#currentSortView, this.#listContainer);
+  }
+
+  #updateSort() {
+    const newSortView = new SortForm({onSortChange: this.#handleSortChange});
+    replace(newSortView, this.#currentSortView);
+    this.#currentSortView = newSortView;
+    this.#currentSortType = DEFAULT_SORT_TYPE;
   }
 
   #renderFilters() {
     const generatedFilters = Object.entries(filters).map(([ filterName, cb ], index) => ({name: filterName, count: cb(this.#tripsPoints).length, isChecked: index === 0}));
-    render(new FilterForm({'filters': generatedFilters }), this.#filterContainer);
+    render(new FilterForm({'filters': generatedFilters , onFilterChange: this.#handleFilterChange}), this.#filterContainer);
   }
 
   #handleEditMode = (id) => {
@@ -97,5 +106,14 @@ export default class BodyPresenter {
       sorting[name](this.#tripsPoints);
       this.#renderTripPoints();
     }
+  };
+
+  #handleFilterChange = (name) => {
+    this.#clearTripPoints();
+    this.#tripsPoints = filters[name](this.#originalTripsList);
+    if (this.#currentSortType !== DEFAULT_SORT_TYPE) {
+      this.#updateSort();
+    }
+    this.#renderTripPoints();
   };
 }

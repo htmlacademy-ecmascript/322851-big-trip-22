@@ -26,9 +26,9 @@ export default class SortForm extends AbstractView {
   #defaultSortType = DEFAULT_SORT_TYPE;
   #handleSortChange = null;
 
-  constructor({ onChange }) {
+  constructor({ onSortChange }) {
     super();
-    this.#handleSortChange = onChange;
+    this.#handleSortChange = onSortChange;
     this.element.addEventListener('change', this.#changeSortOrder);
   }
 
