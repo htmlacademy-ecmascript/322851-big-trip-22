@@ -47,17 +47,31 @@ const compareDurations = (firstPoint, secondPoint) => {
 
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
-const filters = {
-  [FilterTypes.EVERYTHING]: (points) => points,
-  [FilterTypes.FUTURE]: (points) => points.filter((item) => dayjs().isBefore(dayjs(item.dateFrom))),
-  [FilterTypes.PRESENT]: (points) => points.filter((item) => dayjs().isBetween(dayjs(item.dateTo), dayjs(item.dateFrom))),
-  [FilterTypes.PAST]: (points) => points.filter((item) => dayjs().isAfter(dayjs(item.dateTo)))
+const filterPoints = (name, points) => {
+  switch (name) {
+    case FilterTypes.EVERYTHING:
+      return points;
+    case FilterTypes.FUTURE:
+      return points.filter((item) => dayjs().isBefore(dayjs(item.dateFrom)));
+    case FilterTypes.PRESENT:
+      return points.filter((item) => dayjs().isBetween(dayjs(item.dateTo), dayjs(item.dateFrom)));
+    case FilterTypes.PAST:
+      return points.filter((item) => dayjs().isAfter(dayjs(item.dateTo)));
+  }
 };
 
-const sorting = {
-  [SortingTypes.DAY.name]: (points) => points.sort((firstPoint, secondPoint) => dayjs(firstPoint.dateFrom) - dayjs(secondPoint.dateFrom)),
-  [SortingTypes.PRICE.name]: (points) => points.sort((firstPoint, secondPoint) => secondPoint.basePrice - firstPoint.basePrice),
-  [SortingTypes.TIME.name]: (points) => points.sort((firstPoint, secondPoint) => compareDurations(firstPoint, secondPoint))
+const sortPoints = (name, points) => {
+  switch (name) {
+    case SortingTypes.DAY.name:
+      points.sort((firstPoint, secondPoint) => dayjs(firstPoint.dateFrom) - dayjs(secondPoint.dateFrom));
+      break;
+    case SortingTypes.PRICE.name:
+      points.sort((firstPoint, secondPoint) => secondPoint.basePrice - firstPoint.basePrice);
+      break;
+    case SortingTypes.TIME.name:
+      points.sort((firstPoint, secondPoint) => compareDurations(firstPoint, secondPoint));
+      break;
+  }
 };
 
 const updateItem = (items, updatedItem) => items.map((item) => item.id === updatedItem.id ? updatedItem : item);
@@ -70,6 +84,6 @@ export {
   parseDate,
   evaluateDuration,
   isEscapeKey,
-  filters,
+  filterPoints,
   updateItem,
-  sorting };
+  sortPoints };

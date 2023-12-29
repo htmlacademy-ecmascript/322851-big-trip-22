@@ -26,9 +26,9 @@ const EmptyListMessages = {
 
 const FilterTypes = {
   EVERYTHING: 'everything',
-  PAST: 'past',
+  FUTURE: 'future',
   PRESENT: 'present',
-  FUTURE: 'future'
+  PAST: 'past'
 };
 
 const SortingTypes = {

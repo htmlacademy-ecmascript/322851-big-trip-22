@@ -26,7 +26,6 @@ export default class FilterForm extends AbstractView {
     this.#filters = filters;
     this.#handleFilterChange = onFilterChange;
     this.element.addEventListener('change', this.#changeFilter);
-
   }
 
   get template() {

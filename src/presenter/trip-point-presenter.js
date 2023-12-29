@@ -53,29 +53,40 @@ export default class TripPointPresenter {
   }
 
   #createTripPoint() {
-    this.#tripPointComponent = new TripPoint({content: this.#content, onArrowButtonClick: () => {
-      this.#replacePointToForm();
-      document.addEventListener('keydown', this.#escKeyDownHandler);
-    }, onFavoriteClick: this.#handleFavoriteStatusChange
+    this.#tripPointComponent = new TripPoint({
+      content: this.#content,
+      onArrowButtonClick: this.#openForm,
+      onFavoriteClick: this.#handleFavoriteStatusChange
     });
   }
 
+  #openForm = () => {
+    this.#replacePointToForm();
+    document.addEventListener('keydown', this.#escKeyDownHandler);
+  };
+
+  #closeForm = () => {
+    this.#replaceFormToPoint();
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
+  };
+
   #createEventForm() {
-    this.#eventFormComponent = new EventForm({onSubmit: () => {
-      this.#replaceFormToPoint();
-      document.removeEventListener('keydown', this.#escKeyDownHandler);
-    }});
+    this.#eventFormComponent = new EventForm({onSubmit: this.#closeForm});
 
     const eventFormElement = this.#eventFormComponent.element.querySelector('form');
 
-    const formHeader = new EventFormHeader({point: this.#content.point, destinations: this.#destinations});
+    const formHeader = new EventFormHeader({
+      point: this.#content.point,
+      destinations: this.#destinations
+    });
 
-    const formDetails = new EventFormDetails({point: this.#content.point, offers: this.#offers, destination: this.#content.destination});
+    const formDetails = new EventFormDetails({
+      point: this.#content.point,
+      offers: this.#offers,
+      destination: this.#content.destination
+    });
 
-    const arrowButton = new ArrowButton({ onClick: () => {
-      this.#replaceFormToPoint();
-      document.removeEventListener('keydown', this.#escKeyDownHandler);
-    } });
+    const arrowButton = new ArrowButton({ onClick: this.#closeForm});
 
     const deleteButton = new EventFormDeleteButton();
 
@@ -112,8 +123,7 @@ export default class TripPointPresenter {
 
   resetView = () => {
     if (this.#editStatus) {
-      this.#replaceFormToPoint();
-      document.removeEventListener('keydown', this.#escKeyDownHandler);
+      this.#closeForm();
     }
   };
 
