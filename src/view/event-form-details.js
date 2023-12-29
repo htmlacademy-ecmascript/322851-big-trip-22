@@ -79,8 +79,12 @@ export default class EventFormDetails extends AbstractStatefulView {
     }
   }
 
+  resetState() {
+    this.updateElement({point: this.#point, destination: this.#destination});
+  }
+
   #isOffersEmpty() {
-    const currentOffers = this.#offers.find((item) => item.type === this.#point.type.toLowerCase());
+    const currentOffers = this.#offers.find((item) => item.type === this._state.point.type.toLowerCase());
     return currentOffers.offers.length === 0;
   }
 

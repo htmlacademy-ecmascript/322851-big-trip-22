@@ -1,4 +1,4 @@
-import { BLANK_POINT, CALENDAR_FORMAT, TRIP_TYPES } from '../const.js';
+import { BLANK_POINT, CALENDAR_FORMAT, ModeTypes, TRIP_TYPES } from '../const.js';
 import { parseDate } from '../utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
@@ -14,7 +14,14 @@ const renderTypes = ({type, id}) => TRIP_TYPES.map((item) => {
 
 const addDate = (date, format) => (date) ? parseDate(date, format) : '';
 
-const createEventFormHeaderTemplate = (point, destinations) => (`<header class="event__header">
+const createButtons = (mode) => {
+  if (mode === ModeTypes.EDIT) {
+    return '<button class="event__reset-btn" type="reset">Delete</button><button class="event__rollup-btn" type="button"><span class="visually-hidden">Open event</span></button>';
+  }
+  return '<button class="event__reset-btn" type="reset">Cancel</button>';
+};
+
+const createEventFormHeaderTemplate = (point, destinations, mode) => (`<header class="event__header">
 <div class="event__type-wrapper">
   <label class="event__type  event__type-btn" for="event-type-toggle-${point.id}">
     <span class="visually-hidden">Choose event type</span>
@@ -57,6 +64,7 @@ const createEventFormHeaderTemplate = (point, destinations) => (`<header class="
 </div>
 
 <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+  ${createButtons(mode)}
 </header>`);
 
 
@@ -67,20 +75,23 @@ export default class EventFormHeader extends AbstractStatefulView {
   #handleTypeChange = null;
   #handleDestinationChange = null;
   #handleSubmit = null;
+  #mode = null;
 
-  constructor({ point = BLANK_POINT, destinations = [], onTypeChange, onDestinationChange, onSubmit }) {
+  constructor({ point = BLANK_POINT, destinations = [], mode, onTypeChange, onDestinationChange, onSubmit, onArrowButtonClick }) {
     super();
     this.#point = point;
     this.#destinations = destinations;
     this._setState(point);
+    this.#mode = mode;
     this.#handleTypeChange = onTypeChange;
     this.#handleDestinationChange = onDestinationChange;
     this.#handleSubmit = onSubmit;
+    this.#handleClick = onArrowButtonClick;
     this._restoreHandlers();
   }
 
   get template() {
-    return createEventFormHeaderTemplate(this._state, this.#destinations);
+    return createEventFormHeaderTemplate(this._state, this.#destinations, this.#mode);
   }
 
   _restoreHandlers() {
@@ -88,6 +99,13 @@ export default class EventFormHeader extends AbstractStatefulView {
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestination);
     this.element.querySelector('.event__save-btn').addEventListener('click', this.#saveChanges);
     this.element.querySelector('.event__input--price').addEventListener('change', this.#changePrice);
+    if (this.#mode === ModeTypes.EDIT) {
+      this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeEventForm);
+    }
+  }
+
+  resetState() {
+    this.updateElement(this.#point);
   }
 
   #changeTripType = (evt) => {
@@ -121,6 +139,11 @@ export default class EventFormHeader extends AbstractStatefulView {
   #saveChanges = (evt) => {
     evt.preventDefault();
     this.#handleSubmit(this._state);
+  };
+
+  #closeEventForm = (evt) => {
+    evt.preventDefault();
+    this.#handleClick();
   };
 
 

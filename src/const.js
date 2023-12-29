@@ -44,6 +44,12 @@ const SortingTypes = {
   OFFER: {name: 'offer', isDisabled: true}
 };
 
+const ModeTypes = {
+  'DEFAULT': 'default',
+  'EDIT': 'edit',
+  'NEW': 'new'
+};
+
 const DEFAULT_SORT_TYPE = SortingTypes.DAY.name;
 const DEFAULT_FILTER_TYPE = FilterTypes.EVERYTHING;
 
@@ -61,6 +67,7 @@ export {
   SortingTypes,
   DEFAULT_SORT_TYPE,
   DEFAULT_FILTER_TYPE,
-  InfoMessages
+  InfoMessages,
+  ModeTypes
 };
 

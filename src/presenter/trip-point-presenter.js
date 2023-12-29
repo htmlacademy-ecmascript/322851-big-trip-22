@@ -4,9 +4,8 @@ import EventForm from '../view/event-form.js';
 import EventFormHeader from '../view/event-form-header.js';
 import EventFormDetails from '../view/event-form-details.js';
 import TripPoint from '../view/trip-point.js';
-import ArrowButton from '../view/event-form-arrow-button.js';
-import EventFormDeleteButton from '../view/event-form-delete-button.js';
 import { isEscapeKey } from '../utils';
+import { ModeTypes } from '../const.js';
 
 export default class TripPointPresenter {
   #tripPointsContainer = null;
@@ -22,7 +21,7 @@ export default class TripPointPresenter {
   #formDetails = null;
   #formHeader = null;
   #handleModeChange = null;
-  #editStatus = false;
+  #mode = ModeTypes.DEFAULT;
 
   constructor({ container, destinations, offers, onDataChange, onModeChange }) {
     this.#tripPointsContainer = container;
@@ -48,7 +47,7 @@ export default class TripPointPresenter {
         replace(this.#tripPointComponent, previousTripPoint);
       }
 
-      if (this.#editStatus && this.#tripPointsContainer.contains(previousEventForm.element)) {
+      if (this.#mode && this.#tripPointsContainer.contains(previousEventForm.element)) {
         replace(this.#eventFormComponent, previousEventForm);
       }
 
@@ -73,6 +72,8 @@ export default class TripPointPresenter {
   #closeForm = () => {
     this.#replaceFormToPoint();
     document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#formHeader.resetState();
+    this.#formDetails.resetState();
   };
 
   #createEventForm() {
@@ -85,7 +86,9 @@ export default class TripPointPresenter {
       destinations: this.#destinations,
       onTypeChange: this.#handleTypeChange,
       onDestinationChange: this.#handleDestinationChange,
-      onSubmit: this.#handleSubmit
+      onSubmit: this.#handleSubmit,
+      onArrowButtonClick: this.#closeForm,
+      mode: ModeTypes.EDIT
     });
 
     this.#formDetails = new EventFormDetails({
@@ -95,23 +98,17 @@ export default class TripPointPresenter {
       onOffersChange: this.#handleOffersChange
     });
 
-    this.#arrowButton = new ArrowButton({ onClick: this.#closeForm});
-
-    this.#deleteButton = new EventFormDeleteButton();
-
-    render(this.#deleteButton, this.#formHeader.element);
-    render(this.#arrowButton, this.#formHeader.element);
     render(this.#formHeader, this.#eventFormElement);
     render(this.#formDetails, this.#eventFormElement);
   }
 
   #replaceFormToPoint() {
-    this.#editStatus = false;
+    this.#mode = ModeTypes.DEFAULT;
     replace(this.#tripPointComponent, this.#eventFormComponent);
   }
 
   #replacePointToForm() {
-    this.#editStatus = true;
+    this.#mode = ModeTypes.EDIT;
     this.#handleModeChange(this.#content.point.id);
     replace(this.#eventFormComponent, this.#tripPointComponent);
   }
@@ -119,8 +116,7 @@ export default class TripPointPresenter {
   #escKeyDownHandler = (evt) => {
     if (isEscapeKey(evt)) {
       evt.preventDefault();
-      this.#replaceFormToPoint();
-      document.removeEventListener('keydown', this.#escKeyDownHandler);
+      this.#closeForm();
     }
   };
 
@@ -154,7 +150,7 @@ export default class TripPointPresenter {
   };
 
   resetView = () => {
-    if (this.#editStatus) {
+    if (this.#mode === ModeTypes.EDIT) {
       this.#closeForm();
     }
   };
