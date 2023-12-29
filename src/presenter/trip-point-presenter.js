@@ -132,9 +132,9 @@ export default class TripPointPresenter {
     this.#formDetails.setNewType(newType);
   };
 
-  #handleDestinationChange(newDestination) {
-    this.#formDetails.changeDestination(newDestination);
-  }
+  #handleDestinationChange = (newDestination) => {
+    this.#formDetails.setNewDestination(newDestination);
+  };
 
   resetView = () => {
     if (this.#editStatus) {

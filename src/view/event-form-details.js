@@ -46,7 +46,6 @@ const renderDestination = (destination) => {
 
 const createEventFormDetailsTemplate = (point, offers, destination) => {
   offers = offers.find((item) => item.type === point.type.toLocaleLowerCase()).offers;
-  console.log(destination);
   return `<section class="event__details">
   ${renderOffers(point.offers, offers)}
   ${renderDestination(destination)}
@@ -80,5 +79,9 @@ export default class EventFormDetails extends AbstractStatefulView {
     newPoint.type = newType;
     newPoint.offers = [];
     this.updateElement({point: newPoint});
+  }
+
+  setNewDestination(newDestination) {
+    this.updateElement({destination: newDestination});
   }
 }

@@ -34,8 +34,8 @@ const createEventFormHeaderTemplate = (point, destinations) => (`<header class="
   <label class="event__label  event__type-output" for="event-destination-${point.id}">
   ${point.type}
   </label>
-  <input class="event__input  event__input--destination" id="event-destination-${point.id}" type="text" name="event-destination" value="${destinations.filter((item) => item.id === point.destination)[0]?.name ?? ''}" list="destination-list-1">
-  <datalist id="destination-list-1">
+  <input class="event__input  event__input--destination" id="event-destination-${point.id}" type="text" name="event-destination" value="${destinations.filter((item) => item.id === point.destination)[0]?.name ?? ''}" list="destination-list-${point.id}">
+  <datalist id="destination-list-${point.id}">
   ${renderDestinationOptions(destinations)}
   </datalist>
 </div>
@@ -65,13 +65,15 @@ export default class EventFormHeader extends AbstractStatefulView {
   #destinations = null;
   #handleClick = null;
   #handleTypeChange = null;
+  #handleDestinationChange = null;
 
-  constructor({ point = BLANK_POINT, destinations = [], onTypeChange }) {
+  constructor({ point = BLANK_POINT, destinations = [], onTypeChange, onDestinationChange }) {
     super();
     this.#point = point;
     this.#destinations = destinations;
     this._setState(point);
     this.#handleTypeChange = onTypeChange;
+    this.#handleDestinationChange = onDestinationChange;
     this._restoreHandlers();
   }
 
@@ -79,10 +81,10 @@ export default class EventFormHeader extends AbstractStatefulView {
     return createEventFormHeaderTemplate(this._state, this.#destinations);
   }
 
-  #closeEventForm = (evt) => {
-    evt.preventDefault();
-    this.#handleClick();
-  };
+  _restoreHandlers() {
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#changeTripType);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestination);
+  }
 
   #changeTripType = (evt) => {
     evt.preventDefault();
@@ -92,8 +94,12 @@ export default class EventFormHeader extends AbstractStatefulView {
     }
   };
 
-  _restoreHandlers() {
-    this.element.querySelector('.event__type-group').addEventListener('change', this.#changeTripType);
-  }
-
+  #changeDestination = (evt) => {
+    evt.preventDefault();
+    if (evt.target.tagName === 'INPUT') {
+      const newDestination = this.#destinations.find((destination) => destination.name === evt.target.value);
+      this.updateElement({destination: newDestination.id});
+      this.#handleDestinationChange(newDestination);
+    }
+  };
 }
