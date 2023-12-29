@@ -16,6 +16,11 @@ export default class TripPointPresenter {
   #offers = null;
   #tripPointComponent = null;
   #eventFormComponent = null;
+  #eventFormElement = null;
+  #arrowButton = null;
+  #deleteButton = null;
+  #formDetails = null;
+  #formHeader = null;
   #handleModeChange = null;
   #editStatus = false;
 
@@ -73,27 +78,29 @@ export default class TripPointPresenter {
   #createEventForm() {
     this.#eventFormComponent = new EventForm({onSubmit: this.#closeForm});
 
-    const eventFormElement = this.#eventFormComponent.element.querySelector('form');
+    this.#eventFormElement = this.#eventFormComponent.element.querySelector('form');
 
-    const formHeader = new EventFormHeader({
+    this.#formHeader = new EventFormHeader({
       point: this.#content.point,
-      destinations: this.#destinations
+      destinations: this.#destinations,
+      onTypeChange: this.#handleTypeChange,
+      onDestinationChange: this.#handleDestinationChange
     });
 
-    const formDetails = new EventFormDetails({
+    this.#formDetails = new EventFormDetails({
       point: this.#content.point,
       offers: this.#offers,
       destination: this.#content.destination
     });
 
-    const arrowButton = new ArrowButton({ onClick: this.#closeForm});
+    this.#arrowButton = new ArrowButton({ onClick: this.#closeForm});
 
-    const deleteButton = new EventFormDeleteButton();
+    this.#deleteButton = new EventFormDeleteButton();
 
-    render(deleteButton, formHeader.element);
-    render(arrowButton, formHeader.element);
-    render(formHeader, eventFormElement);
-    render(formDetails, eventFormElement);
+    render(this.#deleteButton, this.#formHeader.element);
+    render(this.#arrowButton, this.#formHeader.element);
+    render(this.#formHeader, this.#eventFormElement);
+    render(this.#formDetails, this.#eventFormElement);
   }
 
   #replaceFormToPoint() {
@@ -120,6 +127,14 @@ export default class TripPointPresenter {
     newContent.point.isFavorite = !this.#content.point.isFavorite;
     this.#handleChange(newContent);
   };
+
+  #handleTypeChange = (newType) => {
+    this.#formDetails.setNewType(newType);
+  };
+
+  #handleDestinationChange(newDestination) {
+    this.#formDetails.changeDestination(newDestination);
+  }
 
   resetView = () => {
     if (this.#editStatus) {

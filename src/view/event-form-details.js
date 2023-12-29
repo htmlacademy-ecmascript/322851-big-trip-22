@@ -1,5 +1,5 @@
 import { BLANK_POINT } from '../const.js';
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
 const createOffersList = (selectedOffers, offers) => offers.map((offer) => {
   const isChecked = (selectedOffers.some((id) => id === offer.id)) ? 'checked' : '';
@@ -46,6 +46,7 @@ const renderDestination = (destination) => {
 
 const createEventFormDetailsTemplate = (point, offers, destination) => {
   offers = offers.find((item) => item.type === point.type.toLocaleLowerCase()).offers;
+  console.log(destination);
   return `<section class="event__details">
   ${renderOffers(point.offers, offers)}
   ${renderDestination(destination)}
@@ -53,7 +54,7 @@ const createEventFormDetailsTemplate = (point, offers, destination) => {
 };
 
 
-export default class EventFormDetails extends AbstractView {
+export default class EventFormDetails extends AbstractStatefulView {
   #point = null;
   #offers = null;
   #destination = null;
@@ -63,9 +64,21 @@ export default class EventFormDetails extends AbstractView {
     this.#point = point;
     this.#offers = offers;
     this.#destination = destination;
+    this._setState({point, destination});
   }
 
   get template() {
-    return createEventFormDetailsTemplate(this.#point, this.#offers, this.#destination);
+    return createEventFormDetailsTemplate(this._state.point, this.#offers, this._state.destination);
+  }
+
+  _restoreHandlers() {
+
+  }
+
+  setNewType(newType) {
+    const newPoint = {...this._state.point};
+    newPoint.type = newType;
+    newPoint.offers = [];
+    this.updateElement({point: newPoint});
   }
 }

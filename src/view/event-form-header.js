@@ -1,10 +1,10 @@
 import { BLANK_POINT, CALENDAR_FORMAT, TRIP_TYPES } from '../const.js';
-import AbstractView from '../framework/view/abstract-view.js';
 import { parseDate } from '../utils.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
 const renderDestinationOptions = (destinations) => destinations.map(({name}) => `<option value="${name}"></option>`).join('');
 
-const renderOptions = ({type, id}) => TRIP_TYPES.map((item) => {
+const renderTypes = ({type, id}) => TRIP_TYPES.map((item) => {
   const isChecked = (type === item) ? 'checked' : '';
   return `<div class="event__type-item">
     <input id="event-type-${item.toLowerCase()}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${item.toLowerCase()}" ${isChecked}>
@@ -25,7 +25,7 @@ const createEventFormHeaderTemplate = (point, destinations) => (`<header class="
   <div class="event__type-list">
     <fieldset class="event__type-group">
       <legend class="visually-hidden">Event type</legend>
-      ${renderOptions(point)}
+      ${renderTypes(point)}
     </fieldset>
   </div>
 </div>
@@ -60,25 +60,40 @@ const createEventFormHeaderTemplate = (point, destinations) => (`<header class="
 </header>`);
 
 
-export default class EventFormHeader extends AbstractView {
+export default class EventFormHeader extends AbstractStatefulView {
   #point = null;
   #destinations = null;
   #handleClick = null;
+  #handleTypeChange = null;
 
-  constructor({ point = BLANK_POINT, destinations = []}) {
+  constructor({ point = BLANK_POINT, destinations = [], onTypeChange }) {
     super();
     this.#point = point;
     this.#destinations = destinations;
-
+    this._setState(point);
+    this.#handleTypeChange = onTypeChange;
+    this._restoreHandlers();
   }
 
   get template() {
-    return createEventFormHeaderTemplate(this.#point, this.#destinations);
+    return createEventFormHeaderTemplate(this._state, this.#destinations);
   }
 
   #closeEventForm = (evt) => {
     evt.preventDefault();
     this.#handleClick();
   };
+
+  #changeTripType = (evt) => {
+    evt.preventDefault();
+    if (evt.target.tagName === 'INPUT') {
+      this.updateElement({type: evt.target.value});
+      this.#handleTypeChange(evt.target.value);
+    }
+  };
+
+  _restoreHandlers() {
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#changeTripType);
+  }
 
 }
