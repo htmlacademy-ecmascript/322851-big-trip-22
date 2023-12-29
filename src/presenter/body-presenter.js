@@ -1,4 +1,3 @@
-
 import TripList from '../view/trip-list.js';
 import SortForm from '../view/sort-form.js';
 import FilterForm from '../view/filter-form.js';
@@ -9,7 +8,7 @@ import { render, RenderPosition, replace } from '../framework/render.js';
 import { filterPoints, sortPoints, updateItem } from '../utils.js';
 import TripPointPresenter from './trip-point-presenter.js';
 import { DEFAULT_FILTER_TYPE, DEFAULT_SORT_TYPE, EmptyListMessages, FilterTypes } from '../const.js';
-import EmptyTripList from '../view/empty-trip-list.js';
+import InfoMessage from '../view/info-message.js';
 
 export default class BodyPresenter {
   #listComponent = new TripList();
@@ -34,10 +33,6 @@ export default class BodyPresenter {
   }
 
   init() {
-    this.#renderBody();
-  }
-
-  #renderBody() {
     this.#renderTripInfo();
     this.#renderFilters();
     if (this.#tripsPoints.length) {
@@ -56,7 +51,7 @@ export default class BodyPresenter {
   }
 
   #renderEmptyPointsList() {
-    render(new EmptyTripList({message: EmptyListMessages[this.#currentFilterType.toUpperCase()]}), this.#listContainer);
+    render(new InfoMessage({message: EmptyListMessages[this.#currentFilterType.toUpperCase()]}), this.#listContainer);
   }
 
   #renderTripPoints() {

@@ -2,7 +2,7 @@ import AbstractView from '../framework/view/abstract-view';
 
 const createEmptyTripListTemplate = (message) => `<p class="trip-events__msg">${message}</p>`;
 
-export default class EmptyTripList extends AbstractView {
+export default class InfoMessage extends AbstractView {
   #message = null;
 
   constructor({ message }) {

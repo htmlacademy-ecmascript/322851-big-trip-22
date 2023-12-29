@@ -24,6 +24,11 @@ const EmptyListMessages = {
   FUTURE: 'There are no future events now'
 };
 
+const InfoMessages = {
+  LOADING: 'Loading...',
+  ERROR: 'Failed to load latest route information',
+};
+
 const FilterTypes = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
@@ -55,6 +60,7 @@ export {
   FilterTypes,
   SortingTypes,
   DEFAULT_SORT_TYPE,
-  DEFAULT_FILTER_TYPE
+  DEFAULT_FILTER_TYPE,
+  InfoMessages
 };
 
