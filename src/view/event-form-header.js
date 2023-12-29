@@ -66,14 +66,16 @@ export default class EventFormHeader extends AbstractStatefulView {
   #handleClick = null;
   #handleTypeChange = null;
   #handleDestinationChange = null;
+  #handleSubmit = null;
 
-  constructor({ point = BLANK_POINT, destinations = [], onTypeChange, onDestinationChange }) {
+  constructor({ point = BLANK_POINT, destinations = [], onTypeChange, onDestinationChange, onSubmit }) {
     super();
     this.#point = point;
     this.#destinations = destinations;
     this._setState(point);
     this.#handleTypeChange = onTypeChange;
     this.#handleDestinationChange = onDestinationChange;
+    this.#handleSubmit = onSubmit;
     this._restoreHandlers();
   }
 
@@ -84,12 +86,14 @@ export default class EventFormHeader extends AbstractStatefulView {
   _restoreHandlers() {
     this.element.querySelector('.event__type-group').addEventListener('change', this.#changeTripType);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestination);
+    this.element.querySelector('.event__save-btn').addEventListener('click', this.#saveChanges);
+    this.element.querySelector('.event__input--price').addEventListener('change', this.#changePrice);
   }
 
   #changeTripType = (evt) => {
     evt.preventDefault();
     if (evt.target.tagName === 'INPUT') {
-      this.updateElement({type: evt.target.value});
+      this.updateElement({type: evt.target.value.toLowerCase()});
       this.#handleTypeChange(evt.target.value);
     }
   };
@@ -98,8 +102,22 @@ export default class EventFormHeader extends AbstractStatefulView {
     evt.preventDefault();
     if (evt.target.tagName === 'INPUT') {
       const newDestination = this.#destinations.find((destination) => destination.name === evt.target.value);
-      this.updateElement({destination: newDestination.id});
-      this.#handleDestinationChange(newDestination);
+      if (newDestination) {
+        this.updateElement({destination: newDestination.id});
+        this.#handleDestinationChange(newDestination);
+      }
     }
   };
+
+  #changePrice = (evt) => {
+    evt.preventDefault();
+    this._setState({basePrice: evt.target.value});
+  };
+
+  #saveChanges = (evt) => {
+    evt.preventDefault();
+    this.#handleSubmit(this._state);
+  };
+
+
 }

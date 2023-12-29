@@ -84,7 +84,8 @@ export default class TripPointPresenter {
       point: this.#content.point,
       destinations: this.#destinations,
       onTypeChange: this.#handleTypeChange,
-      onDestinationChange: this.#handleDestinationChange
+      onDestinationChange: this.#handleDestinationChange,
+      onSubmit: this.#handleSubmit
     });
 
     this.#formDetails = new EventFormDetails({
@@ -134,6 +135,17 @@ export default class TripPointPresenter {
 
   #handleDestinationChange = (newDestination) => {
     this.#formDetails.setNewDestination(newDestination);
+  };
+
+  #handleSubmit = (newPoint) => {
+    this.#closeForm();
+    const newOffers = this.#offers.find((items) => items.type === newPoint.type.toLowerCase());
+    const newContent = {
+      point: newPoint,
+      destination: this.#destinations.find((destination) => destination.id === newPoint.destination),
+      offers: newOffers?.offers
+    };
+    this.#handleChange(newContent);
   };
 
   resetView = () => {
