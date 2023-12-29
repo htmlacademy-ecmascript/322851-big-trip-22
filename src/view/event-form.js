@@ -4,7 +4,7 @@ const createEventFormTemplate = () => (`<li class="trip-events__item">
 <form class="event event--edit" action="#" method="post"></form></li>`);
 
 
-export default class EditForm extends AbstractView {
+export default class EventForm extends AbstractView {
   #handleSubmit = null;
 
   constructor({ onSubmit }) {

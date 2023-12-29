@@ -53,7 +53,7 @@ const createEventFormDetailsTemplate = (point, offers, destination) => {
 };
 
 
-export default class EditFormDetails extends AbstractView {
+export default class EventFormDetails extends AbstractView {
   #point = null;
   #offers = null;
   #destination = null;

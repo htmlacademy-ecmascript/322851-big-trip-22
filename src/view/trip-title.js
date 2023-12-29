@@ -8,7 +8,6 @@ const createTripTitleTemplate = () => (`<div class="trip-info__main">
 
 
 export default class TripTitle extends AbstractView {
-  #element = null;
 
   get template() {
     return createTripTitleTemplate();

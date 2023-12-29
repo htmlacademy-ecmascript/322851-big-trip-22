@@ -4,7 +4,6 @@ const createTripInfoTemplate = () => ('<section class="trip-main__trip-info  tri
 
 
 export default class TripInfo extends AbstractView {
-  #element = null;
 
   get template() {
     return createTripInfoTemplate();

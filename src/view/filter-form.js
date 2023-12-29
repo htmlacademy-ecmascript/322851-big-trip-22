@@ -1,35 +1,41 @@
 
 import AbstractView from '../framework/view/abstract-view.js';
 
-const createFilterFormTemplate = () => (`<form class="trip-filters" action="#" method="get">
-<div class="trip-filters__filter">
-  <input id="filter-everything" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="everything" checked>
-  <label class="trip-filters__filter-label" for="filter-everything">Everything</label>
-</div>
 
-<div class="trip-filters__filter">
-  <input id="filter-future" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="future">
-  <label class="trip-filters__filter-label" for="filter-future">Future</label>
-</div>
+const isFilterDisable = (count) => (count) ? '' : 'disabled';
+const isFilterChecked = (status) => (status) ? 'checked' : '';
 
-<div class="trip-filters__filter">
-  <input id="filter-present" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="present">
-  <label class="trip-filters__filter-label" for="filter-present">Present</label>
+const createFilterList = (filters) => filters.map(({name, count, isChecked}) => `<div class="trip-filters__filter">
+  <input id="filter-${name}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" data-filter-type="${name}" value="${name}" ${isFilterDisable(count)}  ${isFilterChecked(isChecked)}>
+  <label class="trip-filters__filter-label" for="filter-${name}">${name}</label>
 </div>
+`).join('');
 
-<div class="trip-filters__filter">
-  <input id="filter-past" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="past">
-  <label class="trip-filters__filter-label" for="filter-past">Past</label>
-</div>
-
+const createFilterFormTemplate = (filters) => (`<form class="trip-filters" action="#" method="get">
+${createFilterList(filters)}
 <button class="visually-hidden" type="submit">Accept filter</button>
 </form>`);
 
 
 export default class FilterForm extends AbstractView {
-  #element = null;
+  #filters = null;
+  #handleFilterChange = null;
+
+  constructor({ filters, onFilterChange }) {
+    super();
+    this.#filters = filters;
+    this.#handleFilterChange = onFilterChange;
+    this.element.addEventListener('change', this.#changeFilter);
+  }
 
   get template() {
-    return createFilterFormTemplate();
+    return createFilterFormTemplate(this.#filters);
   }
+
+  #changeFilter = (evt) => {
+    evt.preventDefault();
+    if (evt.target.tagName === 'INPUT') {
+      this.#handleFilterChange(evt.target.dataset.filterType);
+    }
+  };
 }

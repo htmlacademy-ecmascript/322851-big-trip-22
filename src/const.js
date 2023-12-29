@@ -17,6 +17,36 @@ const BLANK_POINT = { 'id': 0,
   'isFavorite': false
 };
 
+const EmptyListMessages = {
+  EVERYTHING: 'Click New Event to create your first point',
+  PAST: 'There are no past events now',
+  PRESENT: 'There are no present events now',
+  FUTURE: 'There are no future events now'
+};
+
+const InfoMessages = {
+  LOADING: 'Loading...',
+  ERROR: 'Failed to load latest route information',
+};
+
+const FilterTypes = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past'
+};
+
+const SortingTypes = {
+  DAY: {name: 'day', isDisabled: false},
+  EVENT: {name: 'event', isDisabled: true},
+  TIME: {name: 'time', isDisabled: false},
+  PRICE: {name: 'price', isDisabled: false},
+  OFFER: {name: 'offer', isDisabled: true}
+};
+
+const DEFAULT_SORT_TYPE = SortingTypes.DAY.name;
+const DEFAULT_FILTER_TYPE = FilterTypes.EVERYTHING;
+
 export {
   TRIP_TYPES,
   TRIP_NUM,
@@ -25,6 +55,12 @@ export {
   TIME_FORMAT,
   DURATION_FORMAT,
   CALENDAR_FORMAT,
-  BLANK_POINT
+  BLANK_POINT,
+  EmptyListMessages,
+  FilterTypes,
+  SortingTypes,
+  DEFAULT_SORT_TYPE,
+  DEFAULT_FILTER_TYPE,
+  InfoMessages
 };
 
