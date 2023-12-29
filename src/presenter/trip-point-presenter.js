@@ -91,7 +91,8 @@ export default class TripPointPresenter {
     this.#formDetails = new EventFormDetails({
       point: this.#content.point,
       offers: this.#offers,
-      destination: this.#content.destination
+      destination: this.#content.destination,
+      onOffersChange: this.#handleOffersChange
     });
 
     this.#arrowButton = new ArrowButton({ onClick: this.#closeForm});
@@ -135,6 +136,10 @@ export default class TripPointPresenter {
 
   #handleDestinationChange = (newDestination) => {
     this.#formDetails.setNewDestination(newDestination);
+  };
+
+  #handleOffersChange = (newOffers) => {
+    this.#formHeader.setNewOffers(newOffers);
   };
 
   #handleSubmit = (newPoint) => {

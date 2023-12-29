@@ -4,7 +4,7 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 const createOffersList = (selectedOffers, offers) => offers.map((offer) => {
   const isChecked = (selectedOffers.some((id) => id === offer.id)) ? 'checked' : '';
   return `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}" type="checkbox" name="event-offer-luggage" ${isChecked}>
+    <input class="event__offer-checkbox  visually-hidden" data-offer-id="${offer.id}" id="event-offer-${offer.id}" type="checkbox" name="event-offer-luggage" ${isChecked}>
     <label class="event__offer-label" for="event-offer-${offer.id}">
       <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
@@ -45,7 +45,7 @@ const renderDestination = (destination) => {
 };
 
 const createEventFormDetailsTemplate = (point, offers, destination) => {
-  offers = offers.find((item) => item.type === point.type.toLocaleLowerCase()).offers;
+  offers = offers.find((item) => item.type === point.type.toLowerCase()).offers;
   return `<section class="event__details">
   ${renderOffers(point.offers, offers)}
   ${renderDestination(destination)}
@@ -57,13 +57,16 @@ export default class EventFormDetails extends AbstractStatefulView {
   #point = null;
   #offers = null;
   #destination = null;
+  #handleOffersChange = null;
 
-  constructor({point = BLANK_POINT, offers, destination }) {
+  constructor({point = BLANK_POINT, offers, destination, onOffersChange }) {
     super();
     this.#point = point;
     this.#offers = offers;
     this.#destination = destination;
     this._setState({point, destination});
+    this.#handleOffersChange = onOffersChange;
+    this._restoreHandlers();
   }
 
   get template() {
@@ -71,7 +74,14 @@ export default class EventFormDetails extends AbstractStatefulView {
   }
 
   _restoreHandlers() {
+    if (!this.#isOffersEmpty()) {
+      this.element.querySelector('.event__section--offers').addEventListener('change', this.#changeSelectedOffers);
+    }
+  }
 
+  #isOffersEmpty() {
+    const currentOffers = this.#offers.find((item) => item.type === this.#point.type.toLowerCase());
+    return currentOffers.offers.length === 0;
   }
 
   setNewType(newType) {
@@ -84,4 +94,17 @@ export default class EventFormDetails extends AbstractStatefulView {
   setNewDestination(newDestination) {
     this.updateElement({destination: newDestination});
   }
+
+  #changeSelectedOffers = (evt) => {
+    if (evt.target.tagName === 'INPUT') {
+      const newPoint = {...this._state.point};
+      if (evt.target.checked) {
+        newPoint.offers.push(evt.target.dataset.offerId);
+      } else {
+        newPoint.offers = newPoint.offers.filter((item) => item !== evt.target.dataset.offerId);
+      }
+      this._setState({point: newPoint});
+      this.#handleOffersChange(newPoint.offers);
+    }
+  };
 }

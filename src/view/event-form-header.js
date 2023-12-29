@@ -114,6 +114,10 @@ export default class EventFormHeader extends AbstractStatefulView {
     this._setState({basePrice: evt.target.value});
   };
 
+  setNewOffers(newOffers) {
+    this._setState({offers: newOffers });
+  }
+
   #saveChanges = (evt) => {
     evt.preventDefault();
     this.#handleSubmit(this._state);
