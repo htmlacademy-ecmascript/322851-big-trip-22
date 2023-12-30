@@ -81,7 +81,6 @@ const getEarlierDate = (firstDate, secondDate) => {
 
 const updateItem = (items, updatedItem) => items.map((item) => item.id === updatedItem.id ? updatedItem : item);
 
-const parseDateToString = (date) => dayjs(date).format(DATE_STRING_FORMAT);
 
 export {
   getRandomArrayElement,
@@ -93,6 +92,5 @@ export {
   filterPoints,
   updateItem,
   sortPoints,
-  getEarlierDate,
-  parseDateToString
+  getEarlierDate
 };

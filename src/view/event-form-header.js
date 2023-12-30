@@ -1,5 +1,5 @@
 import { BLANK_POINT, CALENDAR_FORMAT, ModeTypes, TRIP_TYPES } from '../const.js';
-import { getEarlierDate, parseDate, parseDateToString } from '../utils.js';
+import { getEarlierDate, parseDate } from '../utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
