@@ -1,6 +1,8 @@
 import { BLANK_POINT, CALENDAR_FORMAT, ModeTypes, TRIP_TYPES } from '../const.js';
-import { parseDate } from '../utils.js';
+import { getEarlierDate, parseDate, parseDateToString } from '../utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 const renderDestinationOptions = (destinations) => destinations.map(({name}) => `<option value="${name}"></option>`).join('');
 
@@ -76,6 +78,8 @@ export default class EventFormHeader extends AbstractStatefulView {
   #handleDestinationChange = null;
   #handleSubmit = null;
   #mode = null;
+  #dateToCalendar = null;
+  #dateFromCalendar = null;
 
   constructor({ point = BLANK_POINT, destinations = [], mode, onTypeChange, onDestinationChange, onSubmit, onArrowButtonClick }) {
     super();
@@ -102,10 +106,31 @@ export default class EventFormHeader extends AbstractStatefulView {
     if (this.#mode === ModeTypes.EDIT) {
       this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeEventForm);
     }
+    this.#setCalendar();
   }
 
   resetState() {
     this.updateElement(this.#point);
+  }
+
+  #setCalendar() {
+    this.#dateToCalendar = flatpickr(this.element.querySelector('.event__input--time[name="event-end-time"]'), {
+      minDate: getEarlierDate(Date.now(), this._state.dateFrom),
+      enableTime: true,
+      defaultDate: this._state.dateTo,
+      dateFormat: 'd/m/y H:i',
+      onChange: this.#handleDateToChange,
+      ['time_24hr']: true
+    });
+
+    this.#dateFromCalendar = flatpickr(this.element.querySelector('.event__input--time[name="event-start-time"]'), {
+      minDate: parseDate(Date.now()),
+      enableTime: true,
+      defaultDate: this._state.dateFrom,
+      dateFormat: 'd/m/y H:i',
+      onChange: this.#handleDateFromChange,
+      ['time_24hr']: true
+    });
   }
 
   #changeTripType = (evt) => {
@@ -114,6 +139,15 @@ export default class EventFormHeader extends AbstractStatefulView {
       this.updateElement({type: evt.target.value.toLowerCase()});
       this.#handleTypeChange(evt.target.value);
     }
+  };
+
+  #handleDateToChange = ([dateTo]) => {
+    this._setState({dateTo: new Date(dateTo).toISOString()});
+  };
+
+  #handleDateFromChange = ([dateFrom]) => {
+    this._setState({dateFrom: new Date(parseDateToString(dateFrom)).toISOString()});
+    this.#dateToCalendar.set('minDate', dateFrom);
   };
 
   #changeDestination = (evt) => {

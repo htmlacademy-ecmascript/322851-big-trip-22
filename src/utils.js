@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration.js';
-import { DURATION_FORMAT, FilterTypes, SortingTypes } from './const';
+import { DATE_STRING_FORMAT, DURATION_FORMAT, FilterTypes, SortingTypes } from './const';
 import customParseFormat from 'dayjs/plugin/customParseFormat.js';
 import isBetween from 'dayjs/plugin/isBetween';
 
@@ -74,8 +74,14 @@ const sortPoints = (name, points) => {
   }
 };
 
+const getEarlierDate = (firstDate, secondDate) => {
+  const earlierDate = (dayjs(dayjs(firstDate)).isAfter(dayjs(secondDate))) ? firstDate : secondDate;
+  return parseDate(earlierDate);
+};
+
 const updateItem = (items, updatedItem) => items.map((item) => item.id === updatedItem.id ? updatedItem : item);
 
+const parseDateToString = (date) => dayjs(date).format(DATE_STRING_FORMAT);
 
 export {
   getRandomArrayElement,
@@ -86,4 +92,7 @@ export {
   isEscapeKey,
   filterPoints,
   updateItem,
-  sortPoints };
+  sortPoints,
+  getEarlierDate,
+  parseDateToString
+};
