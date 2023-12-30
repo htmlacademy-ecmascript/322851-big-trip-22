@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration.js';
-import { DATE_STRING_FORMAT, DURATION_FORMAT, FilterTypes, SortingTypes } from './const';
+import { DURATION_FORMAT, FilterTypes, SortingTypes } from './const';
 import customParseFormat from 'dayjs/plugin/customParseFormat.js';
 import isBetween from 'dayjs/plugin/isBetween';
 

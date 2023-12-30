@@ -146,7 +146,7 @@ export default class EventFormHeader extends AbstractStatefulView {
   };
 
   #handleDateFromChange = ([dateFrom]) => {
-    this._setState({dateFrom: new Date(parseDateToString(dateFrom)).toISOString()});
+    this._setState({dateFrom: new Date(dateFrom).toISOString()});
     this.#dateToCalendar.set('minDate', dateFrom);
   };
 

@@ -6,7 +6,6 @@ const DATE_FORMAT = 'MMM DD';
 const TIME_FORMAT = 'HH-mm';
 const DURATION_FORMAT = 'DD[D] HH[H] mm[M]';
 const CALENDAR_FORMAT = 'DD/MM/YY HH:mm';
-const DATE_STRING_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS[Z]';
 
 const BLANK_POINT = { 'id': 0,
   'type': TRIP_TYPES[5],
@@ -69,7 +68,6 @@ export {
   DEFAULT_SORT_TYPE,
   DEFAULT_FILTER_TYPE,
   InfoMessages,
-  ModeTypes,
-  DATE_STRING_FORMAT
+  ModeTypes
 };
 
