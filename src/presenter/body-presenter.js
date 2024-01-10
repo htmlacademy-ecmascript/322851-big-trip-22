@@ -1,42 +1,36 @@
 import TripList from '../view/trip-list.js';
 import SortForm from '../view/sort-form.js';
-import FilterForm from '../view/filter-form.js';
 import TotalCost from '../view/total-cost.js';
 import TripTitle from '../view/trip-title.js';
 import TripInfo from '../view/trip-info.js';
-import { render, RenderPosition, replace } from '../framework/render.js';
+import { render, RenderPosition, replace, remove } from '../framework/render.js';
 import { filterPoints, sortPoints } from '../utils.js';
 import TripPointPresenter from './trip-point-presenter.js';
-import { DEFAULT_FILTER_TYPE, DEFAULT_SORT_TYPE, EmptyListMessages, FilterTypes, UpdateTypes, UserActions } from '../const.js';
+import { DEFAULT_SORT_TYPE, EmptyListMessages, UpdateTypes, UserActions } from '../const.js';
 import InfoMessage from '../view/info-message.js';
-import FilterModel from '../model/filter-model.js';
 
 export default class BodyPresenter {
   #listComponent = new TripList();
-  #tripInfoContainer = new TripInfo();
+  #tripInfoComponent = null;
   #mainElement = document.querySelector('.trip-main');
   #listContainer = null;
   #tripsModel = null;
   #filterModel = null;
   #tripsPoints = null;
   #tripPointPresenters = new Map();
-  #originalTripsList = null;
   #currentSortType = DEFAULT_SORT_TYPE;
-  #currentSortView = null;
-  #currentFilterType = DEFAULT_FILTER_TYPE;
+  #sortViewComponent = null;
 
-  constructor({ container, tripsModel }) {
+  constructor({ container, tripsModel, filterModel }) {
     this.#listContainer = container;
     this.#tripsModel = tripsModel;
-    this.#filterModel = new FilterModel();
+    this.#filterModel = filterModel;
     this.#tripsModel.addObserver(this.#handleModelChange);
     this.#filterModel.addObserver(this.#handleModelChange);
-
   }
 
   init() {
     this.#renderTripInfo();
-    this.#renderFilters();
     if (this.#tripsModel.tripPoints.length > 0) {
       this.#renderSort();
       render(this.#listComponent, this.#listContainer);
@@ -47,18 +41,25 @@ export default class BodyPresenter {
   }
 
   #renderTripInfo() {
-    render(this.#tripInfoContainer, this.#mainElement, RenderPosition.AFTERBEGIN);
-    render(new TripTitle(), this.#tripInfoContainer.element);
-    render(new TotalCost(), this.#tripInfoContainer.element);
+    const previousTripInfoComponent = this.#tripInfoComponent;
+    this.#tripInfoComponent = new TripInfo();
+    if (previousTripInfoComponent === null) {
+      render(this.#tripInfoComponent, this.#mainElement, RenderPosition.AFTERBEGIN);
+    } else {
+      replace(this.#tripInfoComponent, previousTripInfoComponent);
+      remove(previousTripInfoComponent);
+    }
+    render(new TripTitle(), this.#tripInfoComponent.element);
+    render(new TotalCost(), this.#tripInfoComponent.element);
   }
 
   #renderEmptyPointsList() {
-    render(new InfoMessage({message: EmptyListMessages[this.#currentFilterType.toUpperCase()]}), this.#listContainer);
+    render(new InfoMessage({message: EmptyListMessages[this.#filterModel.filter.toUpperCase()]}), this.#listContainer);
   }
 
   #renderTripPoints() {
-    const filteredPoints = filterPoints(this.#currentFilterType, this.#tripsModel.tripPoints);
-    filteredPoints.sortPoints(this.#currentSortType, filteredPoints);
+    const filteredPoints = filterPoints(this.#filterModel.filter, this.#tripsModel.tripPoints);
+    sortPoints(this.#currentSortType, filteredPoints);
     filteredPoints.forEach((point) => {
       const content = this.#tripsModel.getContentById(point.id);
       const pointPresenter = new TripPointPresenter({
@@ -78,56 +79,50 @@ export default class BodyPresenter {
     this.#tripPointPresenters.clear();
   }
 
-  #handleTripPointChange = (actionType, updateType, newContent) => {
+  #handleTripPointChange = (actionType, updateType, newPoint) => {
     switch (actionType) {
       case UserActions.ADD_EVENT:
-        this.#tripsModel.addPoint(newContent.point);
+        this.#tripsModel.addPoint(updateType, newPoint);
         break;
       case UserActions.UPDATE_EVENT:
-        this.#tripsModel.updatePoint(newContent.point);
+        this.#tripsModel.updatePoint(updateType, newPoint);
         break;
       case UserActions.DELETE_EVENT:
-        this.#tripsModel.deletePoint(newContent.point);
+        this.#tripsModel.deletePoint(updateType, newPoint);
         break;
     }
-
   };
 
-  #handleModelChange = (updateType, content) => {
+  #handleModelChange = (updateType, id) => {
     switch (updateType) {
       case UpdateTypes.PATCH:
-        this.#tripPointPresenters.get(content.point.id).init(content);
+        this.#tripPointPresenters.get(id).init(this.#tripsModel.getContentById(id));
         break;
       case UpdateTypes.MINOR:
         this.#clearTripPoints();
         this.#renderTripPoints();
         break;
       case UpdateTypes.MAJOR:
+        this.#clearTripPoints();
+        this.#currentSortType = DEFAULT_SORT_TYPE;
         this.init();
         break;
     }
   };
 
   #renderSort = () => {
-    this.#currentSortView = new SortForm({onSortChange: this.#handleSortChange});
-    render(this.#currentSortView, this.#listContainer);
+    const previousSortViewComponent = this.#sortViewComponent;
+    const newSortViewComponent = new SortForm({onSortChange: this.#handleSortChange});
+
+    if (previousSortViewComponent === null) {
+      render(newSortViewComponent, this.#listContainer);
+    } else {
+      replace(newSortViewComponent, previousSortViewComponent);
+      remove(previousSortViewComponent);
+    }
+
+    this.#sortViewComponent = newSortViewComponent;
   };
-
-  #updateSort() {
-    const newSortView = new SortForm({onSortChange: this.#handleSortChange});
-    replace(newSortView, this.#currentSortView);
-    this.#currentSortView = newSortView;
-    this.#currentSortType = DEFAULT_SORT_TYPE;
-  }
-
-  #renderFilters() {
-    const generatedFilters = Object.values(FilterTypes).map((name) => ({
-      name: name,
-      count: filterPoints(name, this.#tripsPoints).length,
-      isChecked: name === DEFAULT_FILTER_TYPE
-    }));
-    render(new FilterForm({'filters': generatedFilters , onFilterChange: this.#handleFilterChange}), this.#filterContainer);
-  }
 
   #handleEditMode = (id) => {
     this.#tripPointPresenters.forEach((tripPoint, index) => {
@@ -141,7 +136,6 @@ export default class BodyPresenter {
     if (this.#currentSortType !== name) {
       this.#currentSortType = name;
       this.#clearTripPoints();
-      sortPoints(name, this.#tripsPoints);
       this.#renderTripPoints();
     }
   };

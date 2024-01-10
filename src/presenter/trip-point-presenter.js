@@ -136,9 +136,9 @@ export default class TripPointPresenter {
     this.#formHeader.setNewOffers(newOffers);
   };
 
-  #handleSubmit = (newPoint) => {
+  #handleSubmit = (actionType, updateType, newPoint) => {
     this.#closeForm();
-    this.#handleChange(newPoint);
+    this.#handleChange(actionType, updateType, newPoint);
   };
 
   resetView = () => {

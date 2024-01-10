@@ -9,7 +9,7 @@ const filterContainer = document.querySelector('.trip-controls__filters');
 const tripsModel = new TripsModel();
 const filterModel = new FilterModel();
 
-const bodyPresenter = new BodyPresenter({'container': tripContainer, tripsModel });
+const bodyPresenter = new BodyPresenter({'container': tripContainer, tripsModel, filterModel });
 const filterPresenter = new FilterPresenter({'container': filterContainer, filterModel, tripsModel });
 
 

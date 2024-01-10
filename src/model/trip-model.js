@@ -36,15 +36,21 @@ export default class TripsModel extends Observable {
     };
   }
 
-  updatePoint(updatedPoint) {
-    updateItem(this.#tripPoints, updatedPoint);
+  updatePoint(updateType, updatedPoint) {
+    this.#tripPoints = updateItem(this.#tripPoints, updatedPoint);
+
+    this._notify(updateType, updatedPoint.id);
   }
 
-  addPoint(newPoint) {
+  addPoint(updateType, newPoint) {
     this.#tripPoints.push(newPoint);
+
+    this._notify(updateType);
   }
 
-  deletePoint(point) {
+  deletePoint(updateType, point) {
     this.#tripPoints = this.#tripPoints.filter((item) => item.id !== point.id);
+
+    this._notify(updateType);
   }
 }

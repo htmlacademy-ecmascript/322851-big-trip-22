@@ -31,12 +31,14 @@ export default class FilterPresenter {
 
     const newFilterComponent = new FilterForm({'filters': this.filters , onFilterChange: this.#handleFilterChange});
 
-    if (previousFilterComponent === newFilterComponent) {
+    if (previousFilterComponent === null) {
+      render(newFilterComponent, this.#container);
+    } else {
       replace(newFilterComponent, previousFilterComponent);
       remove(previousFilterComponent);
-    } else {
-      render(newFilterComponent, this.#container);
     }
+
+    this.#filterComponent = newFilterComponent;
   }
 
   #handleFilterChange = (filterType) => {
@@ -45,8 +47,8 @@ export default class FilterPresenter {
     }
   };
 
-  #handleModelChange() {
+  #handleModelChange = () => {
     this.init();
-  }
+  };
 
 }
