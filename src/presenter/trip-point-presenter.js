@@ -16,8 +16,6 @@ export default class TripPointPresenter {
   #tripPointComponent = null;
   #eventFormComponent = null;
   #eventFormElement = null;
-  #arrowButton = null;
-  #deleteButton = null;
   #formDetails = null;
   #formHeader = null;
   #handleModeChange = null;
@@ -120,10 +118,10 @@ export default class TripPointPresenter {
     }
   };
 
-  #handleFavoriteStatusChange = () => {
-    const newContent = {...this.#content};
-    newContent.point.isFavorite = !this.#content.point.isFavorite;
-    this.#handleChange(newContent);
+  #handleFavoriteStatusChange = (actionType, updateType) => {
+    const newPoint = {...this.#content.point};
+    newPoint.isFavorite = !this.#content.point.isFavorite;
+    this.#handleChange(actionType, updateType, newPoint);
   };
 
   #handleTypeChange = (newType) => {
@@ -140,13 +138,7 @@ export default class TripPointPresenter {
 
   #handleSubmit = (newPoint) => {
     this.#closeForm();
-    const newOffers = this.#offers.find((items) => items.type === newPoint.type.toLowerCase());
-    const newContent = {
-      point: newPoint,
-      destination: this.#destinations.find((destination) => destination.id === newPoint.destination),
-      offers: newOffers?.offers
-    };
-    this.#handleChange(newContent);
+    this.#handleChange(newPoint);
   };
 
   resetView = () => {

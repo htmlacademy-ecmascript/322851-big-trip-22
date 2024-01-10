@@ -1,8 +1,15 @@
-import { BLANK_POINT, CALENDAR_FORMAT, ModeTypes, TRIP_TYPES } from '../const.js';
+import { BLANK_POINT, CALENDAR_FORMAT, ModeTypes, TRIP_TYPES, UpdateTypes, UserActions } from '../const.js';
 import { getEarlierDate, parseDate } from '../utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+
+const getUpdateType = (point, state) => {
+  if (point.dateTo === state.dateTo && point.dateFrom === state.dateFrom && point.basePrice === state.basePrice) {
+    return UpdateTypes.PATCH;
+  }
+  return UpdateTypes.MINOR;
+};
 
 const renderDestinationOptions = (destinations) => destinations.map(({name}) => `<option value="${name}"></option>`).join('');
 
@@ -172,7 +179,9 @@ export default class EventFormHeader extends AbstractStatefulView {
 
   #saveChanges = (evt) => {
     evt.preventDefault();
-    this.#handleSubmit(this._state);
+    const actionType = (this.#mode === ModeTypes.EDIT) ? UserActions.UPDATE_EVENT : UserActions.ADD_EVENT;
+    const updateType = getUpdateType(this.#point, this._state);
+    this.#handleSubmit(actionType, updateType, this._state);
   };
 
   #closeEventForm = (evt) => {
