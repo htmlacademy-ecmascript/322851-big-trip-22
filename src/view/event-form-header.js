@@ -69,7 +69,7 @@ const createEventFormHeaderTemplate = (point, destinations, mode) => (`<header c
     <span class="visually-hidden">Price</span>
     &euro;
   </label>
-  <input class="event__input  event__input--price" id="event-price-${point.id}" type="text" name="event-price" value="${point.basePrice}">
+  <input class="event__input  event__input--price" id="event-price-${point.id}" type="text" name="event-price" value="${point.basePrice}" pattern="[0-9]+" required>
 </div>
 
 <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -176,7 +176,12 @@ export default class EventFormHeader extends AbstractStatefulView {
 
   #changePrice = (evt) => {
     evt.preventDefault();
-    this._setState({basePrice: evt.target.value});
+    if (evt.target.checkValidity()) {
+      this._setState({basePrice: evt.target.value});
+    } else {
+      evt.target.value = this._state.basePrice;
+    }
+
   };
 
   setNewOffers(newOffers) {
