@@ -3,6 +3,7 @@ import { getEarlierDate, parseDate } from '../utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import { nanoid } from 'nanoid';
 
 const getUpdateType = (point, state) => {
   if (point.dateTo === state.dateTo && point.dateFrom === state.dateFrom && point.basePrice === state.basePrice) {
@@ -190,6 +191,9 @@ export default class EventFormHeader extends AbstractStatefulView {
 
   #saveChanges = (evt) => {
     evt.preventDefault();
+    if (this.#mode === ModeTypes.NEW) {
+      this._setState({id: nanoid()});
+    }
     const actionType = (this.#mode === ModeTypes.EDIT) ? UserActions.UPDATE_EVENT : UserActions.ADD_EVENT;
     const updateType = getUpdateType(this.#point, this._state);
     this.#handleSubmit(actionType, updateType, this._state);
