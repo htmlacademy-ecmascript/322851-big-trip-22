@@ -1,11 +1,11 @@
-import { remove, replace } from '../framework/render.js';
+import { RenderPosition, remove, replace } from '../framework/render.js';
 import { render } from '../framework/render.js';
 import EventForm from '../view/event-form.js';
 import EventFormHeader from '../view/event-form-header.js';
 import EventFormDetails from '../view/event-form-details.js';
 import TripPoint from '../view/trip-point.js';
 import { isEscapeKey } from '../utils';
-import { ModeTypes } from '../const.js';
+import { BLANK_POINT, ModeTypes, UpdateTypes, UserActions } from '../const.js';
 
 export default class TripPointPresenter {
   #tripPointsContainer = null;
@@ -19,39 +19,51 @@ export default class TripPointPresenter {
   #formDetails = null;
   #formHeader = null;
   #handleModeChange = null;
-  #mode = ModeTypes.DEFAULT;
+  #mode = null;
 
-  constructor({ container, destinations, offers, onDataChange, onModeChange }) {
+  constructor({ container, destinations, offers, onDataChange, onModeChange, mode }) {
     this.#tripPointsContainer = container;
     this.#destinations = destinations;
     this.#offers = offers;
     this.#handleChange = onDataChange;
     this.#handleModeChange = onModeChange;
+    this.#mode = mode;
   }
 
   init(content) {
-    this.#content = content;
-
-    const previousTripPoint = this.#tripPointComponent;
-    const previousEventForm = this.#eventFormComponent;
-
-    this.#createTripPoint();
-    this.#createEventForm();
-
-    if (previousEventForm === null || previousTripPoint === null) {
-      render(this.#tripPointComponent, this.#tripPointsContainer);
+    if (this.#mode === ModeTypes.NEW) {
+      this.#content = {
+        point: BLANK_POINT,
+        destination: null,
+        offers: null
+      };
+      this.#createEventForm();
+      render(this.#eventFormComponent, this.#tripPointsContainer, RenderPosition.AFTERBEGIN);
     } else {
-      if (this.#tripPointsContainer.contains(previousTripPoint.element)) {
-        replace(this.#tripPointComponent, previousTripPoint);
-      }
+      this.#content = content;
 
-      if (this.#mode && this.#tripPointsContainer.contains(previousEventForm.element)) {
-        replace(this.#eventFormComponent, previousEventForm);
-      }
+      const previousTripPoint = this.#tripPointComponent;
+      const previousEventForm = this.#eventFormComponent;
 
-      remove(previousTripPoint);
-      remove(previousEventForm);
+      this.#createTripPoint();
+      this.#createEventForm();
+
+      if (previousEventForm === null || previousTripPoint === null) {
+        render(this.#tripPointComponent, this.#tripPointsContainer);
+      } else {
+        if (this.#tripPointsContainer.contains(previousTripPoint.element)) {
+          replace(this.#tripPointComponent, previousTripPoint);
+        }
+
+        if (this.#mode && this.#tripPointsContainer.contains(previousEventForm.element)) {
+          replace(this.#eventFormComponent, previousEventForm);
+        }
+
+        remove(previousTripPoint);
+        remove(previousEventForm);
+      }
     }
+
   }
 
   #createTripPoint() {
@@ -68,10 +80,14 @@ export default class TripPointPresenter {
   };
 
   #closeForm = () => {
-    this.#replaceFormToPoint();
+    if (this.#mode === ModeTypes.NEW) {
+      remove(this.#eventFormComponent);
+    } else {
+      this.#replaceFormToPoint();
+      this.#formHeader.resetState();
+      this.#formDetails.resetState();
+    }
     document.removeEventListener('keydown', this.#escKeyDownHandler);
-    this.#formHeader.resetState();
-    this.#formDetails.resetState();
   };
 
   #createEventForm() {
@@ -85,8 +101,9 @@ export default class TripPointPresenter {
       onTypeChange: this.#handleTypeChange,
       onDestinationChange: this.#handleDestinationChange,
       onSubmit: this.#handleSubmit,
+      onDelete: this.#handleDelete,
       onArrowButtonClick: this.#closeForm,
-      mode: ModeTypes.EDIT
+      mode: (this.#mode === ModeTypes.DEFAULT) ? ModeTypes.EDIT : this.#mode
     });
 
     this.#formDetails = new EventFormDetails({
@@ -136,13 +153,18 @@ export default class TripPointPresenter {
     this.#formHeader.setNewOffers(newOffers);
   };
 
+  #handleDelete = (point) => {
+    this.#closeForm();
+    this.#handleChange(UserActions.DELETE_EVENT, UpdateTypes.MINOR, point);
+  };
+
   #handleSubmit = (actionType, updateType, newPoint) => {
     this.#closeForm();
     this.#handleChange(actionType, updateType, newPoint);
   };
 
   resetView = () => {
-    if (this.#mode === ModeTypes.EDIT) {
+    if (this.#mode !== ModeTypes.DEFAULT) {
       this.#closeForm();
     }
   };

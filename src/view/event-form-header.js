@@ -83,12 +83,14 @@ export default class EventFormHeader extends AbstractStatefulView {
   #handleClick = null;
   #handleTypeChange = null;
   #handleDestinationChange = null;
+  #handleDelete = null;
   #handleSubmit = null;
   #mode = null;
   #dateToCalendar = null;
   #dateFromCalendar = null;
 
-  constructor({ point = BLANK_POINT, destinations = [], mode, onTypeChange, onDestinationChange, onSubmit, onArrowButtonClick }) {
+
+  constructor({ point = BLANK_POINT, destinations = [], mode, onTypeChange, onDestinationChange, onSubmit, onDelete, onArrowButtonClick }) {
     super();
     this.#point = point;
     this.#destinations = destinations;
@@ -97,6 +99,7 @@ export default class EventFormHeader extends AbstractStatefulView {
     this.#handleTypeChange = onTypeChange;
     this.#handleDestinationChange = onDestinationChange;
     this.#handleSubmit = onSubmit;
+    this.#handleDelete = onDelete;
     this.#handleClick = onArrowButtonClick;
     this._restoreHandlers();
   }
@@ -112,6 +115,9 @@ export default class EventFormHeader extends AbstractStatefulView {
     this.element.querySelector('.event__input--price').addEventListener('change', this.#changePrice);
     if (this.#mode === ModeTypes.EDIT) {
       this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeEventForm);
+      this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deletePoint);
+    } else {
+      this.element.querySelector('.event__reset-btn').addEventListener('click', this.#closeEventForm);
     }
     this.#setCalendar();
   }
@@ -174,7 +180,7 @@ export default class EventFormHeader extends AbstractStatefulView {
   };
 
   setNewOffers(newOffers) {
-    this._setState({offers: newOffers });
+    this._setState({ offers: newOffers });
   }
 
   #saveChanges = (evt) => {
@@ -189,5 +195,8 @@ export default class EventFormHeader extends AbstractStatefulView {
     this.#handleClick();
   };
 
-
+  #deletePoint = (evt) => {
+    evt.preventDefault();
+    this.#handleDelete(this._state);
+  };
 }
