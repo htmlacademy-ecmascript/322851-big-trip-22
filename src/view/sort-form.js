@@ -1,39 +1,41 @@
-import { DEFAULT_SORT_TYPE, SortingTypes } from '../const.js';
+import { SortingTypes } from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 
-const renderSortItem = (name, isDisabled, defaultSortType) => {
+const renderSortItem = (name, isDisabled, currentSortType) => {
   isDisabled = (isDisabled) ? 'disabled' : '';
-  const isChecked = (defaultSortType === name) ? 'checked' : '';
+  const isChecked = (currentSortType === name) ? 'checked' : '';
   return `<div class="trip-sort__item  trip-sort__item--${name}">
   <input id="sort-${name}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" data-sort-type='${name}' value="sort-${name}" ${isDisabled} ${isChecked} >
   <label class="trip-sort__btn" for="sort-${name}">${name}</label>
 </div>`;
 };
 
-const renderSortList = (defaultSortType) => {
+const renderSortList = (currentSortType) => {
   const sortTypes = Object.values(SortingTypes);
-  return sortTypes.map(({name, isDisabled}) => renderSortItem(name, isDisabled, defaultSortType)).join('');
+  return sortTypes.map(({name, isDisabled}) => renderSortItem(name, isDisabled, currentSortType)).join('');
 };
 
-const createSortFormTemplate = (defaultSortType) => (`<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
-${renderSortList(defaultSortType)}
+const createSortFormTemplate = (currentSortType) => (`<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
+${renderSortList(currentSortType)}
 
 </form>`);
 
 
 export default class SortForm extends AbstractView {
-  #defaultSortType = DEFAULT_SORT_TYPE;
+  #currentSortType = null;
   #handleSortChange = null;
 
-  constructor({ onSortChange }) {
+  constructor({ onSortChange, currentSortType }) {
     super();
     this.#handleSortChange = onSortChange;
+    this.#currentSortType = currentSortType;
     this.element.addEventListener('change', this.#changeSortOrder);
+
   }
 
   get template() {
-    return createSortFormTemplate(this.#defaultSortType);
+    return createSortFormTemplate(this.#currentSortType);
   }
 
   #changeSortOrder = (evt) => {
