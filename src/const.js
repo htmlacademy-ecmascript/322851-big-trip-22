@@ -44,8 +44,26 @@ const SortingTypes = {
   OFFER: {name: 'offer', isDisabled: true}
 };
 
+const ModeTypes = {
+  'DEFAULT': 'default',
+  'EDIT': 'edit',
+  'NEW': 'new'
+};
+
 const DEFAULT_SORT_TYPE = SortingTypes.DAY.name;
 const DEFAULT_FILTER_TYPE = FilterTypes.EVERYTHING;
+
+const UserActions = {
+  UPDATE_EVENT: 'UPDATE_EVENT',
+  ADD_EVENT: 'ADD_EVENT',
+  DELETE_EVENT: 'DELETE_EVENT',
+};
+
+const UpdateTypes = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
 
 export {
   TRIP_TYPES,
@@ -61,6 +79,9 @@ export {
   SortingTypes,
   DEFAULT_SORT_TYPE,
   DEFAULT_FILTER_TYPE,
-  InfoMessages
+  InfoMessages,
+  ModeTypes,
+  UserActions,
+  UpdateTypes
 };
 

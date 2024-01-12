@@ -74,6 +74,11 @@ const sortPoints = (name, points) => {
   }
 };
 
+const getEarlierDate = (firstDate, secondDate) => {
+  const earlierDate = (dayjs(dayjs(firstDate)).isAfter(dayjs(secondDate))) ? firstDate : secondDate;
+  return parseDate(earlierDate);
+};
+
 const updateItem = (items, updatedItem) => items.map((item) => item.id === updatedItem.id ? updatedItem : item);
 
 
@@ -86,4 +91,6 @@ export {
   isEscapeKey,
   filterPoints,
   updateItem,
-  sortPoints };
+  sortPoints,
+  getEarlierDate
+};

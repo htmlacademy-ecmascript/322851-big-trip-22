@@ -11,6 +11,7 @@ export default class EventForm extends AbstractView {
     super();
     this.#handleSubmit = onSubmit;
     this.element.querySelector('form').addEventListener('submit', this.#closeEventForm);
+
   }
 
   get template() {

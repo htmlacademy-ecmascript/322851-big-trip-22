@@ -1,4 +1,4 @@
-import { DATE_FORMAT, TIME_FORMAT } from '../const.js';
+import { DATE_FORMAT, TIME_FORMAT, UpdateTypes, UserActions } from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
 import { evaluateDuration, parseDate } from '../utils.js';
 
@@ -75,6 +75,6 @@ export default class TripPoint extends AbstractView {
 
   #changeFavoriteStatus = (evt) => {
     evt.preventDefault();
-    this.#handleFavoriteClick();
+    this.#handleFavoriteClick(UserActions.UPDATE_EVENT, UpdateTypes.PATCH);
   };
 }
