@@ -17,7 +17,7 @@ const renderDestinationOptions = (destinations) => destinations.map(({name}) => 
 const renderTypes = ({type, id}) => TRIP_TYPES.map((item) => {
   const isChecked = (type === item) ? 'checked' : '';
   return `<div class="event__type-item">
-    <input id="event-type-${item.toLowerCase()}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${item.toLowerCase()}" ${isChecked}>
+    <input id="event-type-${item.toLowerCase()}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${item}" ${isChecked}>
     <label class="event__type-label  event__type-label--${item.toLowerCase()}" for="event-type-${item.toLowerCase()}-${id}">${item}</label>
   </div>`;
 }).join('');
@@ -150,7 +150,7 @@ export default class EventFormHeader extends AbstractStatefulView {
   #changeTripType = (evt) => {
     evt.preventDefault();
     if (evt.target.tagName === 'INPUT') {
-      this.updateElement({type: evt.target.value.toLowerCase()});
+      this.updateElement({type: evt.target.value});
       this.#handleTypeChange(evt.target.value);
     }
   };

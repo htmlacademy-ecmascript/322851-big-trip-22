@@ -38,6 +38,7 @@ export default class TripPointPresenter {
         offers: null
       };
       this.#createEventForm();
+      document.addEventListener('keydown', this.#escKeyDownHandler);
       render(this.#eventFormComponent, this.#tripPointsContainer, RenderPosition.AFTERBEGIN);
     } else {
       this.#content = content;

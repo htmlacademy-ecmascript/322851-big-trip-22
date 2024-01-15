@@ -30,10 +30,10 @@ const InfoMessages = {
 };
 
 const FilterTypes = {
-  EVERYTHING: 'everything',
-  FUTURE: 'future',
-  PRESENT: 'present',
-  PAST: 'past'
+  EVERYTHING: 'EVERYTHING',
+  FUTURE: 'FUTURE',
+  PRESENT: 'PRESENT',
+  PAST: 'PAST'
 };
 
 const SortingTypes = {
@@ -45,9 +45,9 @@ const SortingTypes = {
 };
 
 const ModeTypes = {
-  'DEFAULT': 'default',
-  'EDIT': 'edit',
-  'NEW': 'new'
+  'DEFAULT': 'DEFAULT',
+  'EDIT': 'EDIT',
+  'NEW': 'NEW'
 };
 
 const DEFAULT_SORT_TYPE = SortingTypes.DAY.name;
