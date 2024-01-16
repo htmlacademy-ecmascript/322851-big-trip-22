@@ -6,7 +6,7 @@ import TripInfo from '../view/trip-info.js';
 import { render, RenderPosition, replace, remove } from '../framework/render.js';
 import { filterPoints, sortPoints } from '../utils.js';
 import TripPointPresenter from './trip-point-presenter.js';
-import { DEFAULT_FILTER_TYPE, DEFAULT_SORT_TYPE, EmptyListMessages, ModeTypes, UpdateTypes, UserActions } from '../const.js';
+import { DEFAULT_FILTER_TYPE, DEFAULT_SORT_TYPE, EmptyListMessages, InfoMessages, ModeTypes, UpdateTypes, UserActions } from '../const.js';
 import InfoMessage from '../view/info-message.js';
 import NewEventButton from '../view/new-event-button.js';
 
@@ -22,6 +22,8 @@ export default class BodyPresenter {
   #sortViewComponent = null;
   #infoMessageComponent = null;
   #newEventButtonComponent = null;
+  #isLoading = true;
+  #loadingComponent = null;
 
   constructor({ container, tripsModel, filterModel }) {
     this.#listContainer = container;
@@ -33,7 +35,13 @@ export default class BodyPresenter {
 
   init() {
     this.#renderPageHeader();
-    this.#renderPageMain();
+    if (this.#isLoading) {
+      this.#loadingComponent = new InfoMessage({message: InfoMessages.LOADING});
+      render(this.#loadingComponent, this.#listContainer);
+    } else {
+      this.#renderPageMain();
+    }
+
   }
 
   #renderPageHeader() {
@@ -131,6 +139,11 @@ export default class BodyPresenter {
         this.#currentSortType = DEFAULT_SORT_TYPE;
         this.init();
         break;
+      case UpdateTypes.INIT:
+          this.#isLoading = false;
+          remove(this.#loadingComponent);
+          this.init();
+          break;
     }
   };
 

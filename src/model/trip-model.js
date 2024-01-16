@@ -3,11 +3,51 @@ import { mockDestinations } from '../mock/destination.js';
 import { mockOffers } from '../mock/offers.js';
 import { updateItem } from '../utils.js';
 import Observable from '../framework/observable.js';
+import { UpdateTypes } from '../const.js';
 
 export default class TripsModel extends Observable {
-  #tripPoints = getRandomTripPoints();
-  #destinations = mockDestinations;
-  #offers = mockOffers;
+  #tripPoints = null;
+  #destinations = null;
+  #offers = null;
+  #apiService = null;
+
+  constructor({ apiService: apiService }) {
+    super();
+    this.#apiService = apiService;
+  }
+
+  async init() {
+    try {
+      const points = await this.#apiService.tripPoints;
+      this.#tripPoints = points.map(this.#adaptPointToClient);
+      this.#destinations = await this.#apiService.destinations;
+      this.#offers = await this.#apiService.offers;
+
+    } catch {
+      this.#tripPoints = [];
+      this.#destinations = [];
+      this.#offers = [];
+    }
+
+    this._notify(UpdateTypes.INIT);
+  }
+
+  #adaptPointToClient(point) {
+    const newPoint = {
+      ...point,
+      basePrice: point['base_price'],
+      dateTo: point['date_to'],
+      dateFrom: point['date_from'],
+      isFavorite: point['is_favorite']
+    };
+
+    delete newPoint['base_price'];
+    delete newPoint['date_to'];
+    delete newPoint['date_from'];
+    delete newPoint['is_favorite'];
+
+    return newPoint;
+  }
 
   get tripPoints() {
     return this.#tripPoints;

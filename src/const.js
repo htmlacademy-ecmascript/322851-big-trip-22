@@ -63,7 +63,18 @@ const UpdateTypes = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT'
 };
+
+const ApiMethods = {
+  POST: 'POST',
+  GET: 'GET',
+  PUT: 'PUT',
+  DELETE: 'DELETE'
+};
+
+const BASE_URL = 'https://22.objects.pages.academy/big-trip';
+const AUTHORIZATION_STRING = 'Basic 322851bigtrip22';
 
 export {
   TRIP_TYPES,
@@ -82,6 +93,9 @@ export {
   InfoMessages,
   ModeTypes,
   UserActions,
-  UpdateTypes
+  UpdateTypes,
+  BASE_URL,
+  AUTHORIZATION_STRING,
+  ApiMethods
 };
 
