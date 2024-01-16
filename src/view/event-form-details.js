@@ -29,7 +29,7 @@ const renderOffers = (selectedOffers, offers) => {
 const renderPictures = (pictures) => pictures.map(({src, description}) => `<img class="event__photo" src="${src}" alt="${description}">`).join('');
 
 const renderDestination = (destination) => {
-  if (!destination) {
+  if (!destination || (!destination.description && destination.pictures.length === 0)) {
     return '';
   }
   return `<section class="event__section  event__section--destination">

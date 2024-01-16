@@ -7,7 +7,7 @@ const TIME_FORMAT = 'HH-mm';
 const DURATION_FORMAT = 'DD[D] HH[H] mm[M]';
 const CALENDAR_FORMAT = 'DD/MM/YY HH:mm';
 
-const BLANK_POINT = { 'id': 0,
+const BLANK_POINT = {
   'type': TRIP_TYPES[5],
   'destination': '',
   'dateFrom': '',

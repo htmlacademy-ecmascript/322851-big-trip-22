@@ -140,10 +140,11 @@ export default class BodyPresenter {
         this.init();
         break;
       case UpdateTypes.INIT:
-          this.#isLoading = false;
-          remove(this.#loadingComponent);
-          this.init();
-          break;
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.init();
+
+        break;
     }
   };
 

@@ -20,9 +20,9 @@ export default class BigTripApiService extends ApiService {
     const response = await this._load({
       url: `points/${point.id}`,
       method: ApiMethods.PUT,
-      body: JSON.stringify(point),
+      body: JSON.stringify(this.#adaptPointToServer(point)),
       headers: new Headers({'content-type': 'application/json'})
-    }).then(ApiService.parseResponse);
+    });
     const parsedResponse = await ApiService.parseResponse(response);
     return parsedResponse;
   }
@@ -31,7 +31,7 @@ export default class BigTripApiService extends ApiService {
     const response = await this._load({
       url: 'points',
       method: ApiMethods.POST,
-      body: JSON.stringify(point),
+      body: JSON.stringify(this.#adaptPointToServer(point)),
       headers: new Headers({'Content-Type': 'application/json'})
     });
     const parsedResponse = await ApiService.parseResponse(response);
@@ -41,10 +41,25 @@ export default class BigTripApiService extends ApiService {
   async deletePoint(point) {
     const response = await this._load({
       url: `points/${point.id}`,
-      method: ApiMethods.DELETE,
-      headers: new Headers({'content-type': 'application/json'})
-    }).then(ApiService.parseResponse);
-    const parsedResponse = await ApiService.parseResponse(response);
-    return parsedResponse;
+      method: ApiMethods.DELETE
+    });
+    return response;
+  }
+
+  #adaptPointToServer(point) {
+    const newPoint = {
+      ...point,
+      'base_price': parseInt(point.basePrice, 10),
+      'date_to': point.dateTo,
+      'date_from': point.dateFrom,
+      'is_favorite': point.isFavorite
+    };
+
+    delete newPoint.basePrice;
+    delete newPoint.dateTo;
+    delete newPoint.dateFrom;
+    delete newPoint.isFavorite;
+
+    return newPoint;
   }
 }

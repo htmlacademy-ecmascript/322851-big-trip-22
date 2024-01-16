@@ -76,21 +76,44 @@ export default class TripsModel extends Observable {
     };
   }
 
-  updatePoint(updateType, updatedPoint) {
-    this.#tripPoints = updateItem(this.#tripPoints, updatedPoint);
+  async updatePoint(updateType, updatedPoint) {
+    try {
+      const newPoint = await this.#apiService.updatePoint(updatedPoint);
 
-    this._notify(updateType, updatedPoint.id);
+      this.#tripPoints = updateItem(this.#tripPoints, this.#adaptPointToClient(newPoint));
+
+      this._notify(updateType, newPoint.id);
+    } catch(err) {
+      throw new Error('Can\'t update point');
+    }
+
   }
 
-  addPoint(updateType, newPoint) {
-    this.#tripPoints.push(newPoint);
+  async addPoint(updateType, addedPoint) {
+    try {
+      const newPoint = await this.#apiService.addPoint(addedPoint);
 
-    this._notify(updateType);
+      this.#tripPoints.push(this.#adaptPointToClient(newPoint));
+
+      this._notify(updateType, newPoint.id);
+
+    } catch(err) {
+      throw new Error('Can\'t add point');
+    }
   }
 
-  deletePoint(updateType, point) {
-    this.#tripPoints = this.#tripPoints.filter((item) => item.id !== point.id);
+  async deletePoint(updateType, deletedPoint) {
+    try {
+      const response = await this.#apiService.deletePoint(deletedPoint);
+      if (response.ok) {
+        this.#tripPoints = this.#tripPoints.filter((item) => item.id !== deletedPoint.id);
 
-    this._notify(updateType);
+        this._notify(updateType);
+      }
+    } catch(err) {
+      throw new Error('Can\'t delete point');
+    }
+
+
   }
 }

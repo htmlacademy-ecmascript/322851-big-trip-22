@@ -21,7 +21,7 @@ export default class FilterPresenter {
   get filters() {
     return Object.values(FilterTypes).map((name) => ({
       name: name,
-      count: filterPoints(name, this.#tripsModel.tripPoints).length,
+      count: (this.#tripsModel.tripPoints) ? filterPoints(name, this.#tripsModel.tripPoints).length : 0,
       isChecked: name === this.#filterModel.filter
     }));
   }

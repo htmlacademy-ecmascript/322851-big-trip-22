@@ -3,7 +3,6 @@ import { getEarlierDate, parseDate } from '../utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-import { nanoid } from 'nanoid';
 
 const getUpdateType = (point, state) => {
   if (point.dateTo === state.dateTo && point.dateFrom === state.dateFrom && point.basePrice === state.basePrice) {
@@ -14,7 +13,7 @@ const getUpdateType = (point, state) => {
 
 const renderDestinationOptions = (destinations) => destinations.map(({name}) => `<option value="${name}"></option>`).join('');
 
-const renderTypes = ({type, id}) => TRIP_TYPES.map((item) => {
+const renderTypes = ({type, id = 0}) => TRIP_TYPES.map((item) => {
   const isChecked = (type === item) ? 'checked' : '';
   return `<div class="event__type-item">
     <input id="event-type-${item.toLowerCase()}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${item}" ${isChecked}>
@@ -150,7 +149,7 @@ export default class EventFormHeader extends AbstractStatefulView {
   #changeTripType = (evt) => {
     evt.preventDefault();
     if (evt.target.tagName === 'INPUT') {
-      this.updateElement({type: evt.target.value});
+      this.updateElement({type: evt.target.value.toLowerCase()});
       this.#handleTypeChange(evt.target.value);
     }
   };
@@ -191,9 +190,6 @@ export default class EventFormHeader extends AbstractStatefulView {
 
   #saveChanges = (evt) => {
     evt.preventDefault();
-    if (this.#mode === ModeTypes.NEW) {
-      this._setState({id: nanoid()});
-    }
     const actionType = (this.#mode === ModeTypes.EDIT) ? UserActions.UPDATE_EVENT : UserActions.ADD_EVENT;
     const updateType = getUpdateType(this.#point, this._state);
     this.#handleSubmit(actionType, updateType, this._state);
