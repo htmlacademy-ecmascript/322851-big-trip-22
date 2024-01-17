@@ -1,6 +1,3 @@
-import { getRandomTripPoints } from '../mock/trip-points.js';
-import { mockDestinations } from '../mock/destination.js';
-import { mockOffers } from '../mock/offers.js';
 import { updateItem } from '../utils.js';
 import Observable from '../framework/observable.js';
 import { UpdateTypes } from '../const.js';
