@@ -93,16 +93,16 @@ export default class EventFormDetails extends AbstractStatefulView {
     return currentOffers.offers.length === 0;
   }
 
-  setNewType(newType) {
+  setNewType = (newType) => {
     const newPoint = {...this._state.point};
     newPoint.type = newType;
     newPoint.offers = [];
     this.updateElement({point: newPoint});
-  }
+  };
 
-  setNewDestination(newDestination) {
+  setNewDestination = (newDestination) => {
     this.updateElement({destination: newDestination});
-  }
+  };
 
   #changeSelectedOffers = (evt) => {
     if (evt.target.tagName === 'INPUT') {

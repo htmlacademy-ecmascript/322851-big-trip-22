@@ -124,7 +124,8 @@ export default class BodyPresenter {
       case UserActions.ADD_EVENT:
         this.#newPointPresenter.setSavingMode();
         try {
-          this.#tripsModel.addPoint(updateType, newPoint);
+          await this.#tripsModel.addPoint(updateType, newPoint);
+          this.#newPointPresenter.destroy();
         } catch(err) {
           this.#newPointPresenter.setAborting();
         }
@@ -133,7 +134,7 @@ export default class BodyPresenter {
       case UserActions.UPDATE_EVENT:
         this.#tripPointPresenters.get(newPoint.id).setSavingMode();
         try {
-          this.#tripsModel.updatePoint(updateType, newPoint);
+          await this.#tripsModel.updatePoint(updateType, newPoint);
         } catch(err) {
           this.#tripPointPresenters.get(newPoint.id).setAborting();
         }
@@ -141,8 +142,7 @@ export default class BodyPresenter {
       case UserActions.DELETE_EVENT:
         this.#tripPointPresenters.get(newPoint.id).setDeletingMode();
         try {
-          this.#tripsModel.deletePoint(updateType, newPoint);
-
+          await this.#tripsModel.deletePoint(updateType, newPoint);
         } catch(err) {
           this.#tripPointPresenters.get(newPoint.id).setAborting();
         }

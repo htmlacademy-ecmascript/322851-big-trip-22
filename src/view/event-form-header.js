@@ -14,7 +14,7 @@ const getUpdateType = (point, state) => {
 const renderDestinationOptions = (destinations) => destinations.map(({name}) => `<option value="${name}"></option>`).join('');
 
 const renderTypes = ({type, id = 0}) => TRIP_TYPES.map((item) => {
-  const isChecked = (type === item) ? 'checked' : '';
+  const isChecked = (type === item.toLowerCase()) ? 'checked' : '';
   return `<div class="event__type-item">
     <input id="event-type-${item.toLowerCase()}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${item}" ${isChecked}>
     <label class="event__type-label  event__type-label--${item.toLowerCase()}" for="event-type-${item.toLowerCase()}-${id}">${item}</label>
@@ -30,7 +30,8 @@ const createButtons = (mode, isDeleting) => {
   return '<button class="event__reset-btn" type="reset">Cancel</button>';
 };
 
-const createEventFormHeaderTemplate = (point, destinations, mode) => (`<header class="event__header">
+const createEventFormHeaderTemplate = (point, destinations, mode) => (
+  `<header class="event__header">
 <div class="event__type-wrapper">
   <label class="event__type  event__type-btn" for="event-type-toggle-${point.id}">
     <span class="visually-hidden">Choose event type</span>
