@@ -59,6 +59,7 @@ export default class EventFormDetails extends AbstractStatefulView {
   #destination = null;
   #handleOffersChange = null;
 
+
   constructor({point = BLANK_POINT, offers, destination, onOffersChange }) {
     super();
     this.#point = point;
@@ -70,7 +71,11 @@ export default class EventFormDetails extends AbstractStatefulView {
   }
 
   get template() {
-    return createEventFormDetailsTemplate(this._state.point, this.#offers, this._state.destination);
+    return createEventFormDetailsTemplate(
+      this._state.point,
+      this.#offers,
+      this._state.destination
+    );
   }
 
   _restoreHandlers() {

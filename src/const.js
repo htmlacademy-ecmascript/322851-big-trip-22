@@ -73,6 +73,11 @@ const ApiMethods = {
   DELETE: 'DELETE'
 };
 
+const BlockerTimeLimits = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
+
 const BASE_URL = 'https://22.objects.pages.academy/big-trip';
 const AUTHORIZATION_STRING = 'Basic 322851bigtrip22';
 
@@ -96,6 +101,7 @@ export {
   UpdateTypes,
   BASE_URL,
   AUTHORIZATION_STRING,
-  ApiMethods
+  ApiMethods,
+  BlockerTimeLimits
 };
 

@@ -6,9 +6,10 @@ import TripInfo from '../view/trip-info.js';
 import { render, RenderPosition, replace, remove } from '../framework/render.js';
 import { filterPoints, sortPoints } from '../utils.js';
 import TripPointPresenter from './trip-point-presenter.js';
-import { DEFAULT_FILTER_TYPE, DEFAULT_SORT_TYPE, EmptyListMessages, InfoMessages, ModeTypes, UpdateTypes, UserActions } from '../const.js';
+import { BlockerTimeLimits, DEFAULT_FILTER_TYPE, DEFAULT_SORT_TYPE, EmptyListMessages, InfoMessages, ModeTypes, UpdateTypes, UserActions } from '../const.js';
 import InfoMessage from '../view/info-message.js';
 import NewEventButton from '../view/new-event-button.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
 export default class BodyPresenter {
   #listComponent = new TripList();
@@ -24,6 +25,8 @@ export default class BodyPresenter {
   #newEventButtonComponent = null;
   #isLoading = true;
   #loadingComponent = null;
+  #uiBlocker = null;
+  #newPointPresenter = null;
 
   constructor({ container, tripsModel, filterModel }) {
     this.#listContainer = container;
@@ -31,6 +34,10 @@ export default class BodyPresenter {
     this.#filterModel = filterModel;
     this.#tripsModel.addObserver(this.#handleModelChange);
     this.#filterModel.addObserver(this.#handleModelChange);
+    this.#uiBlocker = new UiBlocker({
+      lowerLimit: BlockerTimeLimits.LOWER_LIMIT,
+      upperLimit: BlockerTimeLimits.UPPER_LIMIT
+    });
   }
 
   init() {
@@ -111,18 +118,37 @@ export default class BodyPresenter {
     this.#tripPointPresenters.clear();
   }
 
-  #handleTripPointChange = (actionType, updateType, newPoint) => {
+  #handleTripPointChange = async (actionType, updateType, newPoint) => {
+    this.#uiBlocker.block();
     switch (actionType) {
       case UserActions.ADD_EVENT:
-        this.#tripsModel.addPoint(updateType, newPoint);
+        this.#newPointPresenter.setSavingMode();
+        try {
+          this.#tripsModel.addPoint(updateType, newPoint);
+        } catch(err) {
+          this.#newPointPresenter.setAborting();
+        }
+
         break;
       case UserActions.UPDATE_EVENT:
-        this.#tripsModel.updatePoint(updateType, newPoint);
+        this.#tripPointPresenters.get(newPoint.id).setSavingMode();
+        try {
+          this.#tripsModel.updatePoint(updateType, newPoint);
+        } catch(err) {
+          this.#tripPointPresenters.get(newPoint.id).setAborting();
+        }
         break;
       case UserActions.DELETE_EVENT:
-        this.#tripsModel.deletePoint(updateType, newPoint);
+        this.#tripPointPresenters.get(newPoint.id).setDeletingMode();
+        try {
+          this.#tripsModel.deletePoint(updateType, newPoint);
+
+        } catch(err) {
+          this.#tripPointPresenters.get(newPoint.id).setAborting();
+        }
         break;
     }
+    this.#uiBlocker.unblock();
   };
 
   #handleModelChange = (updateType, id) => {
@@ -182,7 +208,7 @@ export default class BodyPresenter {
   };
 
   #handleNewEventButtonClick = () => {
-    const pointPresenter = new TripPointPresenter({
+    this.#newPointPresenter = new TripPointPresenter({
       container: this.#listComponent.element,
       destinations: this.#tripsModel.destinations,
       offers: this.#tripsModel.offers,
@@ -194,6 +220,6 @@ export default class BodyPresenter {
     this.#currentSortType = DEFAULT_SORT_TYPE;
     this.#filterModel.setFilter(UpdateTypes.MINOR, DEFAULT_FILTER_TYPE);
 
-    pointPresenter.init();
+    this.#newPointPresenter.init();
   };
 }

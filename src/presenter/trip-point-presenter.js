@@ -56,7 +56,7 @@ export default class TripPointPresenter {
           replace(this.#tripPointComponent, previousTripPoint);
         }
 
-        if (this.#mode && this.#tripPointsContainer.contains(previousEventForm.element)) {
+        if (this.#mode === ModeTypes.EDIT && this.#tripPointsContainer.contains(previousEventForm.element)) {
           replace(this.#eventFormComponent, previousEventForm);
         }
 
@@ -118,6 +118,41 @@ export default class TripPointPresenter {
     render(this.#formDetails, this.#eventFormElement);
   }
 
+  setSavingMode() {
+    if (this.#mode !== ModeTypes.DEFAULT) {
+      this.#eventFormComponent.updateElement({
+        isDisabled: true
+      });
+      this.#formHeader.updateElement({
+        isSaving: true
+      });
+    }
+  }
+
+  setDeletingMode() {
+    if (this.#mode !== ModeTypes.DEFAULT) {
+      this.#eventFormComponent.updateElement({
+        isDisabled: true
+      });
+      this.#formHeader.updateElement({
+        isDeleting: true
+      });
+    }
+  }
+
+  setAborting() {
+    const resetFormElement = () => {
+      this.#eventFormComponent.updateElement({
+        isDisabled: false
+      });
+      this.#formHeader.updateElement({
+        isDeleting: false,
+        isSaving: false
+      });
+    };
+    this.#eventFormComponent.shake(resetFormElement);
+  }
+
   #replaceFormToPoint() {
     this.#mode = ModeTypes.DEFAULT;
     replace(this.#tripPointComponent, this.#eventFormComponent);
@@ -160,7 +195,6 @@ export default class TripPointPresenter {
   };
 
   #handleSubmit = (actionType, updateType, newPoint) => {
-    this.#closeForm();
     this.#handleChange(actionType, updateType, newPoint);
   };
 

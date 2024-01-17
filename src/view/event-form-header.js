@@ -23,9 +23,9 @@ const renderTypes = ({type, id = 0}) => TRIP_TYPES.map((item) => {
 
 const addDate = (date, format) => (date) ? parseDate(date, format) : '';
 
-const createButtons = (mode) => {
+const createButtons = (mode, isDeleting) => {
   if (mode === ModeTypes.EDIT) {
-    return '<button class="event__reset-btn" type="reset">Delete</button><button class="event__rollup-btn" type="button"><span class="visually-hidden">Open event</span></button>';
+    return `<button class="event__reset-btn" type="reset">${(isDeleting) ? 'Deleting' : 'Delete'}</button><button class="event__rollup-btn" type="button"><span class="visually-hidden">Open event</span></button>`;
   }
   return '<button class="event__reset-btn" type="reset">Cancel</button>';
 };
@@ -72,8 +72,8 @@ const createEventFormHeaderTemplate = (point, destinations, mode) => (`<header c
   <input class="event__input  event__input--price" id="event-price-${point.id}" type="text" name="event-price" value="${point.basePrice}" pattern="[0-9]+" required>
 </div>
 
-<button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-  ${createButtons(mode)}
+<button class="event__save-btn  btn  btn--blue" type="submit">${(point.isSaving) ? 'Saving' : 'Save'}</button>
+  ${createButtons(mode, point.isDeleting)}
 </header>`);
 
 
@@ -94,7 +94,11 @@ export default class EventFormHeader extends AbstractStatefulView {
     super();
     this.#point = point;
     this.#destinations = destinations;
-    this._setState(point);
+    this._setState({
+      ...point,
+      isSaving: false,
+      isDeleting: false
+    });
     this.#mode = mode;
     this.#handleTypeChange = onTypeChange;
     this.#handleDestinationChange = onDestinationChange;
@@ -192,6 +196,8 @@ export default class EventFormHeader extends AbstractStatefulView {
     evt.preventDefault();
     const actionType = (this.#mode === ModeTypes.EDIT) ? UserActions.UPDATE_EVENT : UserActions.ADD_EVENT;
     const updateType = getUpdateType(this.#point, this._state);
+    delete this._state.isDeleting;
+    delete this._state.isSaving;
     this.#handleSubmit(actionType, updateType, this._state);
   };
 
