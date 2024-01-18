@@ -138,6 +138,7 @@ export default class TripPointPresenter {
       this.#eventFormComponent.updateElement({
         isDisabled: true
       });
+      this.#eventFormElement = this.#eventFormComponent.element.querySelector('form');
       render(this.#formHeader, this.#eventFormElement);
       render(this.#formDetails, this.#eventFormElement);
       this.#formHeader.updateElement({
@@ -151,6 +152,9 @@ export default class TripPointPresenter {
       this.#eventFormComponent.updateElement({
         isDisabled: false
       });
+      this.#eventFormElement = this.#eventFormComponent.element.querySelector('form');
+      render(this.#formHeader, this.#eventFormElement);
+      render(this.#formDetails, this.#eventFormElement);
       this.#formHeader.updateElement({
         isDeleting: false,
         isSaving: false

@@ -133,7 +133,7 @@ export default class EventFormHeader extends AbstractStatefulView {
 
   #setCalendar() {
     this.#dateToCalendar = flatpickr(this.element.querySelector('.event__input--time[name="event-end-time"]'), {
-      minDate: getEarlierDate(Date.now(), this._state.dateFrom),
+      minDate: (this._state.dateFrom) ? getEarlierDate(Date.now(), this._state.dateFrom) : parseDate(Date.now()),
       enableTime: true,
       defaultDate: this._state.dateTo,
       dateFormat: 'd/m/y H:i',

@@ -59,7 +59,6 @@ export default class BigTripApiService extends ApiService {
     delete newPoint.dateTo;
     delete newPoint.dateFrom;
     delete newPoint.isFavorite;
-
     return newPoint;
   }
 }

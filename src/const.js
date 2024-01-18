@@ -8,10 +8,10 @@ const DURATION_FORMAT = 'DD[D] HH[H] mm[M]';
 const CALENDAR_FORMAT = 'DD/MM/YY HH:mm';
 
 const BLANK_POINT = {
-  'type': TRIP_TYPES[5],
+  'type': TRIP_TYPES[5].toLowerCase(),
   'destination': '',
-  'dateFrom': '',
-  'dateTo': '',
+  'dateFrom': null,
+  'dateTo': null,
   'basePrice': '',
   'offers': [],
   'isFavorite': false

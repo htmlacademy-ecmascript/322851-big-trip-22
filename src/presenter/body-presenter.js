@@ -208,6 +208,9 @@ export default class BodyPresenter {
   };
 
   #handleNewEventButtonClick = () => {
+    if (this.#newPointPresenter) {
+      this.#newPointPresenter.destroy();
+    }
     this.#newPointPresenter = new TripPointPresenter({
       container: this.#listComponent.element,
       destinations: this.#tripsModel.destinations,
