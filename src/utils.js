@@ -83,7 +83,7 @@ const sortPoints = (name, points) => {
 
 const getEarlierDate = (firstDate, secondDate) => {
   const earlierDate = (dayjs(dayjs(firstDate)).isAfter(dayjs(secondDate))) ? firstDate : secondDate;
-  return parseDate(earlierDate);
+  return earlierDate;
 };
 
 const updateItem = (items, updatedItem) => items.map((item) => item.id === updatedItem.id ? updatedItem : item);

@@ -16,7 +16,7 @@ const tripsModel = new TripsModel({ apiService: bigTripApiService });
 const filterModel = new FilterModel();
 
 
-const headerPresenter = new HeaderPresenter({ headerContainer, tripsModel });
+new HeaderPresenter({ headerContainer, tripsModel });
 const bodyPresenter = new BodyPresenter({'container': tripContainer, tripsModel, filterModel });
 const filterPresenter = new FilterPresenter({'container': filterContainer, filterModel, tripsModel });
 

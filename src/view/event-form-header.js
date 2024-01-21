@@ -164,8 +164,13 @@ export default class EventFormHeader extends AbstractStatefulView {
   };
 
   #handleDateFromChange = ([dateFrom]) => {
-    this._setState({dateFrom: new Date(dateFrom).toISOString()});
+    dateFrom = new Date(dateFrom).toISOString();
+    this.updateElement({
+      dateFrom: dateFrom,
+      dateTo: (this._state.dateTo) ? getEarlierDate(dateFrom, this._state.dateTo) : dateFrom
+    });
     this.#dateToCalendar.set('minDate', dateFrom);
+    this.#dateToCalendar.set('defaultDate', getEarlierDate(dateFrom, this._state.dateTo));
   };
 
   #changeDestination = (evt) => {
