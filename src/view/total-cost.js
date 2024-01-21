@@ -1,13 +1,20 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
-const createTotalCostTemplate = () => (`<p class="trip-info__cost">
-Total: &euro;&nbsp;<span class="trip-info__cost-value">1230</span>
+const createTotalCostTemplate = (cost) => (`<p class="trip-info__cost">
+Total: &euro;&nbsp;<span class="trip-info__cost-value">${cost}</span>
 </p>`);
 
 
 export default class TotalCost extends AbstractView {
+  #cost = null;
+
+  constructor(cost) {
+    super();
+    this.#cost = cost;
+
+  }
 
   get template() {
-    return createTotalCostTemplate();
+    return createTotalCostTemplate(this.#cost);
   }
 }

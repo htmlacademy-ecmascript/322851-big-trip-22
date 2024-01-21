@@ -35,7 +35,14 @@ const generateRandomIndex = (a, b) => {
 const parseDate = (date, format) => dayjs(date).format(format);
 
 const evaluateDuration = (dateFrom, dateTo) => {
-  const tripDuration = dayjs.duration(dayjs(dateTo).diff(dayjs(dateFrom))).format(DURATION_FORMAT);
+  let tripDuration = dayjs.duration(dayjs(dateTo).diff(dayjs(dateFrom)));
+  const days = Math.floor(tripDuration.asDays());
+  if (days > 30) {
+    const format = DURATION_FORMAT.replace('DD[D] ', '');
+    tripDuration = tripDuration.format(format);
+    return `${days}D ${tripDuration}`;
+  }
+  tripDuration = tripDuration.format(DURATION_FORMAT);
   return tripDuration.replace('00D 00H ', '').replace('00D ', '');
 };
 

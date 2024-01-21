@@ -19,14 +19,15 @@ export default class TripsModel extends Observable {
       this.#tripPoints = points.map(this.#adaptPointToClient);
       this.#destinations = await this.#apiService.destinations;
       this.#offers = await this.#apiService.offers;
-
+      this._notify(UpdateTypes.INIT);
     } catch {
       this.#tripPoints = [];
       this.#destinations = [];
       this.#offers = [];
+      this._notify(UpdateTypes.ERROR);
     }
 
-    this._notify(UpdateTypes.INIT);
+
   }
 
   #adaptPointToClient(point) {
@@ -75,9 +76,9 @@ export default class TripsModel extends Observable {
 
   async updatePoint(updateType, updatedPoint) {
     try {
-      const newPoint = await this.#apiService.updatePoint(updatedPoint);
-
-      this.#tripPoints = updateItem(this.#tripPoints, this.#adaptPointToClient(newPoint));
+      const response = await this.#apiService.updatePoint(updatedPoint);
+      const newPoint = this.#adaptPointToClient(response);
+      this.#tripPoints = updateItem(this.#tripPoints, newPoint);
 
       this._notify(updateType, newPoint.id);
     } catch(err) {

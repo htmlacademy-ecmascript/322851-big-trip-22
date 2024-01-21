@@ -20,13 +20,15 @@ export default class TripPointPresenter {
   #formHeader = null;
   #handleModeChange = null;
   #mode = null;
+  #handleCancelButtonClick = null;
 
-  constructor({ container, destinations, offers, onDataChange, onModeChange, mode }) {
+  constructor({ container, destinations, offers, onDataChange, onModeChange, onCancelButtonClick, mode }) {
     this.#tripPointsContainer = container;
     this.#destinations = destinations;
     this.#offers = offers;
     this.#handleChange = onDataChange;
     this.#handleModeChange = onModeChange;
+    this.#handleCancelButtonClick = onCancelButtonClick;
     this.#mode = mode;
   }
 
@@ -83,6 +85,7 @@ export default class TripPointPresenter {
   #closeForm = () => {
     if (this.#mode === ModeTypes.NEW) {
       remove(this.#eventFormComponent);
+      this.#handleCancelButtonClick();
     } else {
       this.#replaceFormToPoint();
       this.#formHeader.resetState();
@@ -160,7 +163,11 @@ export default class TripPointPresenter {
         isSaving: false
       });
     };
-    this.#eventFormComponent.shake(resetFormElement);
+    if (this.#mode !== ModeTypes.DEFAULT) {
+      this.#eventFormComponent.shake(resetFormElement);
+    } else {
+      this.#tripPointComponent.shake();
+    }
   }
 
   #replaceFormToPoint() {
@@ -200,7 +207,6 @@ export default class TripPointPresenter {
   };
 
   #handleDelete = (point) => {
-    this.#closeForm();
     this.#handleChange(UserActions.DELETE_EVENT, UpdateTypes.MINOR, point);
   };
 

@@ -26,22 +26,27 @@ const renderOffers = (selectedOffers, offers) => {
 </section>`;
 };
 
-const renderPictures = (pictures) => pictures.map(({src, description}) => `<img class="event__photo" src="${src}" alt="${description}">`).join('');
+const renderPictures = (pictures) => {
+  if (pictures.length === 0) {
+    return '';
+  }
+  return `<div class="event__photos-container">
+  <div class="event__photos-tape">
+    ${pictures.map(({src, description}) => `<img class="event__photo" src="${src}" alt="${description}">`).join('')}
+  </div>
+</div>`;
+};
+
 
 const renderDestination = (destination) => {
   if (!destination || (!destination.description && destination.pictures.length === 0)) {
     return '';
   }
   return `<section class="event__section  event__section--destination">
-<h3 class="event__section-title  event__section-title--destination">Destination</h3>
-<p class="event__destination-description">${destination.description}</p>
-
-<div class="event__photos-container">
-  <div class="event__photos-tape">
-    ${renderPictures(destination.pictures)}
-  </div>
-</div>
-</section>`;
+  <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+  <p class="event__destination-description">${destination.description}</p>
+  ${renderPictures(destination.pictures)}
+  </section>`;
 };
 
 const createEventFormDetailsTemplate = (point, offers, destination) => {

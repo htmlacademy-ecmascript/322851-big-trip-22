@@ -3,7 +3,7 @@ const TRIP_NUM = 5;
 const IMAGES_URL = 'https://loremflickr.com/248/152?random=';
 
 const DATE_FORMAT = 'MMM DD';
-const TIME_FORMAT = 'HH-mm';
+const TIME_FORMAT = 'HH:mm';
 const DURATION_FORMAT = 'DD[D] HH[H] mm[M]';
 const CALENDAR_FORMAT = 'DD/MM/YY HH:mm';
 
@@ -12,7 +12,7 @@ const BLANK_POINT = {
   'destination': '',
   'dateFrom': null,
   'dateTo': null,
-  'basePrice': '',
+  'basePrice': 0,
   'offers': [],
   'isFavorite': false
 };
@@ -63,7 +63,8 @@ const UpdateTypes = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
-  INIT: 'INIT'
+  INIT: 'INIT',
+  ERROR: 'ERROR'
 };
 
 const ApiMethods = {
