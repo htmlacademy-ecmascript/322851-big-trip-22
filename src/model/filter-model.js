@@ -1,7 +1,6 @@
 import { DEFAULT_FILTER_TYPE } from '../const.js';
 import Observable from '../framework/observable.js';
 
-
 export default class FilterModel extends Observable {
   #filter = DEFAULT_FILTER_TYPE;
 

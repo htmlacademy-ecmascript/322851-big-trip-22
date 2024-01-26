@@ -1,42 +1,42 @@
 const TRIP_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
-const TRIP_NUM = 5;
-const IMAGES_URL = 'https://loremflickr.com/248/152?random=';
+const BASE_URL = 'https://22.objects.pages.academy/big-trip';
+const AUTHORIZATION_STRING = 'Basic 322851bigtrip22';
 
 const DATE_FORMAT = 'MMM DD';
-const TIME_FORMAT = 'HH-mm';
+const TIME_FORMAT = 'HH:mm';
 const DURATION_FORMAT = 'DD[D] HH[H] mm[M]';
 const CALENDAR_FORMAT = 'DD/MM/YY HH:mm';
 
-const BLANK_POINT = { 'id': 0,
-  'type': TRIP_TYPES[5],
+const BLANK_POINT = {
+  'type': TRIP_TYPES[5].toLowerCase(),
   'destination': '',
-  'dateFrom': '',
-  'dateTo': '',
-  'basePrice': '',
+  'dateFrom': null,
+  'dateTo': null,
+  'basePrice': 0,
   'offers': [],
   'isFavorite': false
 };
 
-const EmptyListMessages = {
+const EmptyListMessage = {
   EVERYTHING: 'Click New Event to create your first point',
   PAST: 'There are no past events now',
   PRESENT: 'There are no present events now',
   FUTURE: 'There are no future events now'
 };
 
-const InfoMessages = {
+const InfoMessageByAction = {
   LOADING: 'Loading...',
   ERROR: 'Failed to load latest route information',
 };
 
-const FilterTypes = {
+const FilterType = {
   EVERYTHING: 'EVERYTHING',
   FUTURE: 'FUTURE',
   PRESENT: 'PRESENT',
   PAST: 'PAST'
 };
 
-const SortingTypes = {
+const SortingType = {
   DAY: {name: 'day', isDisabled: false},
   EVENT: {name: 'event', isDisabled: true},
   TIME: {name: 'time', isDisabled: false},
@@ -44,44 +44,61 @@ const SortingTypes = {
   OFFER: {name: 'offer', isDisabled: true}
 };
 
-const ModeTypes = {
+const ModeType = {
   'DEFAULT': 'DEFAULT',
   'EDIT': 'EDIT',
   'NEW': 'NEW'
 };
 
-const DEFAULT_SORT_TYPE = SortingTypes.DAY.name;
-const DEFAULT_FILTER_TYPE = FilterTypes.EVERYTHING;
+const DEFAULT_SORT_TYPE = SortingType.DAY.name;
+const DEFAULT_FILTER_TYPE = FilterType.EVERYTHING;
 
-const UserActions = {
+const UserAction = {
   UPDATE_EVENT: 'UPDATE_EVENT',
   ADD_EVENT: 'ADD_EVENT',
   DELETE_EVENT: 'DELETE_EVENT',
 };
 
-const UpdateTypes = {
+const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
+  ERROR: 'ERROR'
 };
+
+const ApiMethod = {
+  POST: 'POST',
+  GET: 'GET',
+  PUT: 'PUT',
+  DELETE: 'DELETE'
+};
+
+const BlockerTimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
+
 
 export {
   TRIP_TYPES,
-  TRIP_NUM,
-  IMAGES_URL,
   DATE_FORMAT,
   TIME_FORMAT,
   DURATION_FORMAT,
   CALENDAR_FORMAT,
   BLANK_POINT,
-  EmptyListMessages,
-  FilterTypes,
-  SortingTypes,
+  EmptyListMessage,
+  FilterType,
+  SortingType,
   DEFAULT_SORT_TYPE,
   DEFAULT_FILTER_TYPE,
-  InfoMessages,
-  ModeTypes,
-  UserActions,
-  UpdateTypes
+  InfoMessageByAction,
+  ModeType,
+  UserAction,
+  UpdateType,
+  BASE_URL,
+  AUTHORIZATION_STRING,
+  ApiMethod,
+  BlockerTimeLimit
 };
 

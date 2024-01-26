@@ -5,7 +5,7 @@ import EventFormHeader from '../view/event-form-header.js';
 import EventFormDetails from '../view/event-form-details.js';
 import TripPoint from '../view/trip-point.js';
 import { isEscapeKey } from '../utils';
-import { BLANK_POINT, ModeTypes, UpdateTypes, UserActions } from '../const.js';
+import { BLANK_POINT, ModeType,UpdateType, UserAction } from '../const.js';
 
 export default class TripPointPresenter {
   #tripPointsContainer = null;
@@ -20,25 +20,27 @@ export default class TripPointPresenter {
   #formHeader = null;
   #handleModeChange = null;
   #mode = null;
+  #handleCancelButtonClick = null;
 
-  constructor({ container, destinations, offers, onDataChange, onModeChange, mode }) {
+  constructor({ container, destinations, offers, onDataChange, onModeChange, onCancelButtonClick, mode }) {
     this.#tripPointsContainer = container;
     this.#destinations = destinations;
     this.#offers = offers;
     this.#handleChange = onDataChange;
     this.#handleModeChange = onModeChange;
+    this.#handleCancelButtonClick = onCancelButtonClick;
     this.#mode = mode;
   }
 
   init(content) {
-    if (this.#mode === ModeTypes.NEW) {
+    if (this.#mode === ModeType.NEW) {
       this.#content = {
         point: BLANK_POINT,
         destination: null,
         offers: null
       };
       this.#createEventForm();
-      document.addEventListener('keydown', this.#escKeyDownHandler);
+      document.addEventListener('keydown', this.#handleEscKeyDown);
       render(this.#eventFormComponent, this.#tripPointsContainer, RenderPosition.AFTERBEGIN);
     } else {
       this.#content = content;
@@ -56,15 +58,74 @@ export default class TripPointPresenter {
           replace(this.#tripPointComponent, previousTripPoint);
         }
 
-        if (this.#mode && this.#tripPointsContainer.contains(previousEventForm.element)) {
-          replace(this.#eventFormComponent, previousEventForm);
+        if (this.#tripPointsContainer.contains(previousEventForm.element)) {
+          replace(this.#tripPointComponent, previousEventForm);
         }
 
         remove(previousTripPoint);
         remove(previousEventForm);
       }
     }
+  }
 
+  setSavingMode() {
+    if (this.#mode !== ModeType.DEFAULT) {
+      this.#formHeader.updateElement({
+        isSaving: true
+      });
+      this.#eventFormComponent.updateElement({
+        isDisabled: true
+      });
+      this.#eventFormElement = this.#eventFormComponent.element.querySelector('form');
+      render(this.#formHeader, this.#eventFormElement);
+      render(this.#formDetails, this.#eventFormElement);
+
+    }
+  }
+
+  setDeletingMode() {
+    if (this.#mode !== ModeType.DEFAULT) {
+      this.#eventFormComponent.updateElement({
+        isDisabled: true
+      });
+      this.#eventFormElement = this.#eventFormComponent.element.querySelector('form');
+      render(this.#formHeader, this.#eventFormElement);
+      render(this.#formDetails, this.#eventFormElement);
+      this.#formHeader.updateElement({
+        isDeleting: true
+      });
+    }
+  }
+
+  setAborting() {
+    const resetFormElement = () => {
+      this.#eventFormComponent.updateElement({
+        isDisabled: false
+      });
+      this.#eventFormElement = this.#eventFormComponent.element.querySelector('form');
+      render(this.#formHeader, this.#eventFormElement);
+      render(this.#formDetails, this.#eventFormElement);
+      this.#formHeader.updateElement({
+        isDeleting: false,
+        isSaving: false
+      });
+    };
+    if (this.#mode !== ModeType.DEFAULT) {
+      this.#eventFormComponent.shake(resetFormElement);
+    } else {
+      this.#tripPointComponent.shake();
+    }
+  }
+
+  resetView = () => {
+    if (this.#mode !== ModeType.DEFAULT) {
+      this.#closeForm();
+    }
+  };
+
+  destroy() {
+    remove(this.#tripPointComponent);
+    remove(this.#eventFormComponent);
   }
 
   #createTripPoint() {
@@ -75,24 +136,8 @@ export default class TripPointPresenter {
     });
   }
 
-  #openForm = () => {
-    this.#replacePointToForm();
-    document.addEventListener('keydown', this.#escKeyDownHandler);
-  };
-
-  #closeForm = () => {
-    if (this.#mode === ModeTypes.NEW) {
-      remove(this.#eventFormComponent);
-    } else {
-      this.#replaceFormToPoint();
-      this.#formHeader.resetState();
-      this.#formDetails.resetState();
-    }
-    document.removeEventListener('keydown', this.#escKeyDownHandler);
-  };
-
   #createEventForm() {
-    this.#eventFormComponent = new EventForm({onSubmit: this.#closeForm});
+    this.#eventFormComponent = new EventForm();
 
     this.#eventFormElement = this.#eventFormComponent.element.querySelector('form');
 
@@ -104,7 +149,7 @@ export default class TripPointPresenter {
       onSubmit: this.#handleSubmit,
       onDelete: this.#handleDelete,
       onArrowButtonClick: this.#closeForm,
-      mode: (this.#mode === ModeTypes.DEFAULT) ? ModeTypes.EDIT : this.#mode
+      mode: (this.#mode === ModeType.DEFAULT) ? ModeType.EDIT : this.#mode
     });
 
     this.#formDetails = new EventFormDetails({
@@ -118,18 +163,35 @@ export default class TripPointPresenter {
     render(this.#formDetails, this.#eventFormElement);
   }
 
+  #openForm = () => {
+    this.#replacePointToForm();
+    document.addEventListener('keydown', this.#handleEscKeyDown);
+  };
+
+  #closeForm = () => {
+    if (this.#mode === ModeType.NEW) {
+      remove(this.#eventFormComponent);
+      this.#handleCancelButtonClick();
+    } else {
+      this.#replaceFormToPoint();
+      this.#formHeader.resetState();
+      this.#formDetails.resetState();
+    }
+    document.removeEventListener('keydown', this.#handleEscKeyDown);
+  };
+
   #replaceFormToPoint() {
-    this.#mode = ModeTypes.DEFAULT;
+    this.#mode = ModeType.DEFAULT;
     replace(this.#tripPointComponent, this.#eventFormComponent);
   }
 
   #replacePointToForm() {
-    this.#mode = ModeTypes.EDIT;
+    this.#mode = ModeType.EDIT;
     this.#handleModeChange(this.#content.point.id);
     replace(this.#eventFormComponent, this.#tripPointComponent);
   }
 
-  #escKeyDownHandler = (evt) => {
+  #handleEscKeyDown = (evt) => {
     if (isEscapeKey(evt)) {
       evt.preventDefault();
       this.#closeForm();
@@ -155,24 +217,10 @@ export default class TripPointPresenter {
   };
 
   #handleDelete = (point) => {
-    this.#closeForm();
-    this.#handleChange(UserActions.DELETE_EVENT, UpdateTypes.MINOR, point);
+    this.#handleChange(UserAction.DELETE_EVENT, UpdateType.MINOR, point);
   };
 
   #handleSubmit = (actionType, updateType, newPoint) => {
-    this.#closeForm();
     this.#handleChange(actionType, updateType, newPoint);
   };
-
-  resetView = () => {
-    if (this.#mode !== ModeTypes.DEFAULT) {
-      this.#closeForm();
-    }
-  };
-
-  destroy() {
-    remove(this.#tripPointComponent);
-    remove(this.#eventFormComponent);
-  }
-
 }

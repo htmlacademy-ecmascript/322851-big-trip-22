@@ -26,22 +26,27 @@ const renderOffers = (selectedOffers, offers) => {
 </section>`;
 };
 
-const renderPictures = (pictures) => pictures.map(({src, description}) => `<img class="event__photo" src="${src}" alt="${description}">`).join('');
+const renderPictures = (pictures) => {
+  if (pictures.length === 0) {
+    return '';
+  }
+  return `<div class="event__photos-container">
+  <div class="event__photos-tape">
+    ${pictures.map(({src, description}) => `<img class="event__photo" src="${src}" alt="${description}">`).join('')}
+  </div>
+</div>`;
+};
+
 
 const renderDestination = (destination) => {
-  if (!destination) {
+  if (!destination || (!destination.description && destination.pictures.length === 0)) {
     return '';
   }
   return `<section class="event__section  event__section--destination">
-<h3 class="event__section-title  event__section-title--destination">Destination</h3>
-<p class="event__destination-description">${destination.description}</p>
-
-<div class="event__photos-container">
-  <div class="event__photos-tape">
-    ${renderPictures(destination.pictures)}
-  </div>
-</div>
-</section>`;
+  <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+  <p class="event__destination-description">${destination.description}</p>
+  ${renderPictures(destination.pictures)}
+  </section>`;
 };
 
 const createEventFormDetailsTemplate = (point, offers, destination) => {
@@ -52,12 +57,12 @@ const createEventFormDetailsTemplate = (point, offers, destination) => {
   </section>`;
 };
 
-
 export default class EventFormDetails extends AbstractStatefulView {
   #point = null;
   #offers = null;
   #destination = null;
   #handleOffersChange = null;
+
 
   constructor({point = BLANK_POINT, offers, destination, onOffersChange }) {
     super();
@@ -70,7 +75,11 @@ export default class EventFormDetails extends AbstractStatefulView {
   }
 
   get template() {
-    return createEventFormDetailsTemplate(this._state.point, this.#offers, this._state.destination);
+    return createEventFormDetailsTemplate(
+      this._state.point,
+      this.#offers,
+      this._state.destination
+    );
   }
 
   _restoreHandlers() {
@@ -83,20 +92,20 @@ export default class EventFormDetails extends AbstractStatefulView {
     this.updateElement({point: this.#point, destination: this.#destination});
   }
 
-  #isOffersEmpty() {
-    const currentOffers = this.#offers.find((item) => item.type === this._state.point.type.toLowerCase());
-    return currentOffers.offers.length === 0;
-  }
-
-  setNewType(newType) {
+  setNewType = (newType) => {
     const newPoint = {...this._state.point};
     newPoint.type = newType;
     newPoint.offers = [];
     this.updateElement({point: newPoint});
-  }
+  };
 
-  setNewDestination(newDestination) {
+  setNewDestination = (newDestination) => {
     this.updateElement({destination: newDestination});
+  };
+
+  #isOffersEmpty() {
+    const currentOffers = this.#offers.find((item) => item.type === this._state.point.type.toLowerCase());
+    return currentOffers.offers.length === 0;
   }
 
   #changeSelectedOffers = (evt) => {

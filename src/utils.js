@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration.js';
-import { DURATION_FORMAT, FilterTypes, SortingTypes } from './const';
+import { DURATION_FORMAT, FilterType, SortingType } from './const';
 import customParseFormat from 'dayjs/plugin/customParseFormat.js';
 import isBetween from 'dayjs/plugin/isBetween';
 
@@ -8,34 +8,17 @@ dayjs.extend(customParseFormat);
 dayjs.extend(duration);
 dayjs.extend(isBetween);
 
-const getRandomArrayElement = (items) => items[Math.floor(Math.random() * items.length)];
-
-const getRandomInteger = (a, b) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-  const result = Math.random() * (upper - lower + 1) + lower;
-  return Math.floor(result);
-};
-
-const generateRandomIndex = (a, b) => {
-  const indexNumbers = [];
-  return () => {
-    let currentIndex = getRandomInteger(a, b);
-    if (indexNumbers.length === Math.floor(Math.max(a, b) + 1)) {
-      return '';
-    }
-    while (indexNumbers.includes(currentIndex)) {
-      currentIndex = getRandomInteger(a, b);
-    }
-    indexNumbers.push(currentIndex);
-    return currentIndex;
-  };
-};
-
 const parseDate = (date, format) => dayjs(date).format(format);
 
 const evaluateDuration = (dateFrom, dateTo) => {
-  const tripDuration = dayjs.duration(dayjs(dateTo).diff(dayjs(dateFrom))).format(DURATION_FORMAT);
+  let tripDuration = dayjs.duration(dayjs(dateTo).diff(dayjs(dateFrom)));
+  const daysCount = Math.floor(tripDuration.asDays());
+  if (daysCount > 30) {
+    const format = DURATION_FORMAT.replace('DD[D] ', '');
+    tripDuration = tripDuration.format(format);
+    return `${daysCount}D ${tripDuration}`;
+  }
+  tripDuration = tripDuration.format(DURATION_FORMAT);
   return tripDuration.replace('00D 00H ', '').replace('00D ', '');
 };
 
@@ -49,43 +32,37 @@ const isEscapeKey = (evt) => evt.key === 'Escape';
 
 const filterPoints = (name, points) => {
   switch (name) {
-    case FilterTypes.EVERYTHING:
+    case FilterType.EVERYTHING:
       return points;
-    case FilterTypes.FUTURE:
+    case FilterType.FUTURE:
       return points.filter((item) => dayjs().isBefore(dayjs(item.dateFrom)));
-    case FilterTypes.PRESENT:
+    case FilterType.PRESENT:
       return points.filter((item) => dayjs().isBetween(dayjs(item.dateTo), dayjs(item.dateFrom)));
-    case FilterTypes.PAST:
+    case FilterType.PAST:
       return points.filter((item) => dayjs().isAfter(dayjs(item.dateTo)));
   }
 };
 
 const sortPoints = (name, points) => {
   switch (name) {
-    case SortingTypes.DAY.name:
+    case SortingType.DAY.name:
       points.sort((firstPoint, secondPoint) => dayjs(firstPoint.dateFrom) - dayjs(secondPoint.dateFrom));
       break;
-    case SortingTypes.PRICE.name:
+    case SortingType.PRICE.name:
       points.sort((firstPoint, secondPoint) => secondPoint.basePrice - firstPoint.basePrice);
       break;
-    case SortingTypes.TIME.name:
+    case SortingType.TIME.name:
       points.sort((firstPoint, secondPoint) => compareDurations(firstPoint, secondPoint));
       break;
   }
 };
 
-const getEarlierDate = (firstDate, secondDate) => {
-  const earlierDate = (dayjs(dayjs(firstDate)).isAfter(dayjs(secondDate))) ? firstDate : secondDate;
-  return parseDate(earlierDate);
-};
+const getEarlierDate = (firstDate, secondDate) => (dayjs(dayjs(firstDate)).isAfter(dayjs(secondDate))) ? firstDate : secondDate;
 
 const updateItem = (items, updatedItem) => items.map((item) => item.id === updatedItem.id ? updatedItem : item);
 
 
 export {
-  getRandomArrayElement,
-  getRandomInteger,
-  generateRandomIndex,
   parseDate,
   evaluateDuration,
   isEscapeKey,
