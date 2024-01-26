@@ -1,4 +1,3 @@
-
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
 const createButtonTemplate = ({ isDisabled }) => `<button class="trip-main__event-add-btn  btn  btn--big  btn--yellow" type="button" ${(isDisabled) ? 'disabled' : ''}>New event</button>`;

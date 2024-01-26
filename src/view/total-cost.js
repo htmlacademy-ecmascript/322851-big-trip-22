@@ -11,7 +11,6 @@ export default class TotalCost extends AbstractView {
   constructor(cost) {
     super();
     this.#cost = cost;
-
   }
 
   get template() {

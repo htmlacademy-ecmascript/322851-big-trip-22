@@ -1,6 +1,6 @@
 const TRIP_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
-const TRIP_NUM = 5;
-const IMAGES_URL = 'https://loremflickr.com/248/152?random=';
+const BASE_URL = 'https://22.objects.pages.academy/big-trip';
+const AUTHORIZATION_STRING = 'Basic 322851bigtrip22';
 
 const DATE_FORMAT = 'MMM DD';
 const TIME_FORMAT = 'HH:mm';
@@ -17,26 +17,26 @@ const BLANK_POINT = {
   'isFavorite': false
 };
 
-const EmptyListMessages = {
+const EmptyListMessage = {
   EVERYTHING: 'Click New Event to create your first point',
   PAST: 'There are no past events now',
   PRESENT: 'There are no present events now',
   FUTURE: 'There are no future events now'
 };
 
-const InfoMessages = {
+const InfoMessageByAction = {
   LOADING: 'Loading...',
   ERROR: 'Failed to load latest route information',
 };
 
-const FilterTypes = {
+const FilterType = {
   EVERYTHING: 'EVERYTHING',
   FUTURE: 'FUTURE',
   PRESENT: 'PRESENT',
   PAST: 'PAST'
 };
 
-const SortingTypes = {
+const SortingType = {
   DAY: {name: 'day', isDisabled: false},
   EVENT: {name: 'event', isDisabled: true},
   TIME: {name: 'time', isDisabled: false},
@@ -44,22 +44,22 @@ const SortingTypes = {
   OFFER: {name: 'offer', isDisabled: true}
 };
 
-const ModeTypes = {
+const ModeType = {
   'DEFAULT': 'DEFAULT',
   'EDIT': 'EDIT',
   'NEW': 'NEW'
 };
 
-const DEFAULT_SORT_TYPE = SortingTypes.DAY.name;
-const DEFAULT_FILTER_TYPE = FilterTypes.EVERYTHING;
+const DEFAULT_SORT_TYPE = SortingType.DAY.name;
+const DEFAULT_FILTER_TYPE = FilterType.EVERYTHING;
 
-const UserActions = {
+const UserAction = {
   UPDATE_EVENT: 'UPDATE_EVENT',
   ADD_EVENT: 'ADD_EVENT',
   DELETE_EVENT: 'DELETE_EVENT',
 };
 
-const UpdateTypes = {
+const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
@@ -67,42 +67,38 @@ const UpdateTypes = {
   ERROR: 'ERROR'
 };
 
-const ApiMethods = {
+const ApiMethod = {
   POST: 'POST',
   GET: 'GET',
   PUT: 'PUT',
   DELETE: 'DELETE'
 };
 
-const BlockerTimeLimits = {
+const BlockerTimeLimit = {
   LOWER_LIMIT: 350,
   UPPER_LIMIT: 1000,
 };
 
-const BASE_URL = 'https://22.objects.pages.academy/big-trip';
-const AUTHORIZATION_STRING = 'Basic 322851bigtrip22';
 
 export {
   TRIP_TYPES,
-  TRIP_NUM,
-  IMAGES_URL,
   DATE_FORMAT,
   TIME_FORMAT,
   DURATION_FORMAT,
   CALENDAR_FORMAT,
   BLANK_POINT,
-  EmptyListMessages,
-  FilterTypes,
-  SortingTypes,
+  EmptyListMessage,
+  FilterType,
+  SortingType,
   DEFAULT_SORT_TYPE,
   DEFAULT_FILTER_TYPE,
-  InfoMessages,
-  ModeTypes,
-  UserActions,
-  UpdateTypes,
+  InfoMessageByAction,
+  ModeType,
+  UserAction,
+  UpdateType,
   BASE_URL,
   AUTHORIZATION_STRING,
-  ApiMethods,
-  BlockerTimeLimits
+  ApiMethod,
+  BlockerTimeLimit
 };
 

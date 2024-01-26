@@ -1,5 +1,5 @@
 import ApiService from './framework/api-service.js';
-import { ApiMethods } from './const.js';
+import { ApiMethod } from './const.js';
 
 
 export default class BigTripApiService extends ApiService {
@@ -19,7 +19,7 @@ export default class BigTripApiService extends ApiService {
   async updatePoint(point) {
     const response = await this._load({
       url: `points/${point.id}`,
-      method: ApiMethods.PUT,
+      method: ApiMethod.PUT,
       body: JSON.stringify(this.#adaptPointToServer(point)),
       headers: new Headers({'content-type': 'application/json'})
     });
@@ -30,7 +30,7 @@ export default class BigTripApiService extends ApiService {
   async addPoint(point) {
     const response = await this._load({
       url: 'points',
-      method: ApiMethods.POST,
+      method: ApiMethod.POST,
       body: JSON.stringify(this.#adaptPointToServer(point)),
       headers: new Headers({'Content-Type': 'application/json'})
     });
@@ -41,7 +41,7 @@ export default class BigTripApiService extends ApiService {
   async deletePoint(point) {
     const response = await this._load({
       url: `points/${point.id}`,
-      method: ApiMethods.DELETE
+      method: ApiMethod.DELETE
     });
     return response;
   }

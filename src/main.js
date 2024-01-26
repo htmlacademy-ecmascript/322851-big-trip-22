@@ -15,11 +15,10 @@ const bigTripApiService = new BigTripApiService(BASE_URL, AUTHORIZATION_STRING);
 const tripsModel = new TripsModel({ apiService: bigTripApiService });
 const filterModel = new FilterModel();
 
-
-new HeaderPresenter({ headerContainer, tripsModel });
 const bodyPresenter = new BodyPresenter({'container': tripContainer, tripsModel, filterModel });
 const filterPresenter = new FilterPresenter({'container': filterContainer, filterModel, tripsModel });
 
+new HeaderPresenter({ headerContainer, tripsModel });
 tripsModel.init();
 bodyPresenter.init();
 filterPresenter.init();

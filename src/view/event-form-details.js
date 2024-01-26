@@ -57,7 +57,6 @@ const createEventFormDetailsTemplate = (point, offers, destination) => {
   </section>`;
 };
 
-
 export default class EventFormDetails extends AbstractStatefulView {
   #point = null;
   #offers = null;
@@ -93,11 +92,6 @@ export default class EventFormDetails extends AbstractStatefulView {
     this.updateElement({point: this.#point, destination: this.#destination});
   }
 
-  #isOffersEmpty() {
-    const currentOffers = this.#offers.find((item) => item.type === this._state.point.type.toLowerCase());
-    return currentOffers.offers.length === 0;
-  }
-
   setNewType = (newType) => {
     const newPoint = {...this._state.point};
     newPoint.type = newType;
@@ -108,6 +102,11 @@ export default class EventFormDetails extends AbstractStatefulView {
   setNewDestination = (newDestination) => {
     this.updateElement({destination: newDestination});
   };
+
+  #isOffersEmpty() {
+    const currentOffers = this.#offers.find((item) => item.type === this._state.point.type.toLowerCase());
+    return currentOffers.offers.length === 0;
+  }
 
   #changeSelectedOffers = (evt) => {
     if (evt.target.tagName === 'INPUT') {

@@ -23,13 +23,7 @@ const renderDestinations = ({ firstDestination, secondDestination, lastDestinati
 
 const renderDates = ({firstDate, secondDate}) => {
   const dateFormat = DATE_FORMAT.split(' ').reverse().join(' ');
-  const [firstDay, firstMonth] = parseDate(firstDate, dateFormat).split(' ');
-  const [secondDay, secondMonth] = parseDate(secondDate, dateFormat).split(' ');
-
-  /*if (firstMonth === secondMonth) {
-    return `${firstDay} - ${secondDay} ${secondMonth}`;
-  }*/
-  return `${firstDay} ${firstMonth} - ${secondDay} ${secondMonth}`;
+  return `${parseDate(firstDate, dateFormat)} - ${parseDate(secondDate, dateFormat)}`;
 };
 
 

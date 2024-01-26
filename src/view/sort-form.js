@@ -1,4 +1,4 @@
-import { SortingTypes } from '../const.js';
+import { SortingType } from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 
@@ -12,7 +12,7 @@ const renderSortItem = (name, isDisabled, currentSortType) => {
 };
 
 const renderSortList = (currentSortType) => {
-  const sortTypes = Object.values(SortingTypes);
+  const sortTypes = Object.values(SortingType);
   return sortTypes.map(({name, isDisabled}) => renderSortItem(name, isDisabled, currentSortType)).join('');
 };
 
@@ -31,7 +31,6 @@ export default class SortForm extends AbstractView {
     this.#handleSortChange = onSortChange;
     this.#currentSortType = currentSortType;
     this.element.addEventListener('change', this.#changeSortOrder);
-
   }
 
   get template() {
