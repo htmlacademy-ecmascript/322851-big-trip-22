@@ -1,5 +1,5 @@
 const TRIP_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
-const BASE_URL = 'https://22.objects.pages.academy/big-trip';
+const BASE_URL = 'https://21.objects.htmlacademy.pro/big-trip';
 const AUTHORIZATION_STRING = 'Basic 322851bigtrip22';
 
 const DATE_FORMAT = 'MMM DD';
