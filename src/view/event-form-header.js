@@ -1,4 +1,4 @@
-import { BLANK_POINT, CALENDAR_FORMAT, ModeType, TRIP_TYPES, UpdateType, UserAction } from '../const.js';
+import { BLANK_POINT, DateFormat, ModeType, TRIP_TYPES, UpdateType, UserAction } from '../const.js';
 import { getEarlierDate, parseDate } from '../utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
@@ -25,7 +25,7 @@ const addDate = (date, format) => (date) ? parseDate(date, format) : '';
 
 const createButtons = (mode, isDeleting) => {
   if (mode === ModeType.EDIT) {
-    return `<button class="event__reset-btn" type="reset">${(isDeleting) ? 'Deleting...' : 'Delete'}</button><button class="event__rollup-btn" type="button"><span class="visually-hidden">Open event</span></button>`;
+    return `<button class="event__reset-btn" type="reset" ${(isDeleting) ? 'disabled' : ''}>${(isDeleting) ? 'Deleting...' : 'Delete'}</button><button class="event__rollup-btn" type="button"><span class="visually-hidden">Open event</span></button>`;
   }
   return '<button class="event__reset-btn" type="reset">Cancel</button>';
 };
@@ -51,7 +51,7 @@ const createEventFormHeaderTemplate = (point, destinations, mode) => (
       <label class="event__label  event__type-output" for="event-destination-${point.id}">
       ${point.type}
       </label>
-      <input class="event__input  event__input--destination" id="event-destination-${point.id}" type="text" name="event-destination" value="${destinations.filter((item) => item.id === point.destination)[0]?.name ?? ''}" list="destination-list-${point.id}">
+      <input class="event__input  event__input--destination" id="event-destination-${point.id}" type="text" name="event-destination" value="${destinations.filter((item) => item.id === point.destination)[0]?.name ?? ''}" list="destination-list-${point.id}" required>
       <datalist id="destination-list-${point.id}">
       ${renderDestinationOptions(destinations)}
       </datalist>
@@ -59,10 +59,10 @@ const createEventFormHeaderTemplate = (point, destinations, mode) => (
 
     <div class="event__field-group  event__field-group--time">
       <label class="visually-hidden" for="event-start-time-${point.id}">From</label>
-      <input class="event__input  event__input--time" id="event-start-time-${point.id}" type="text" name="event-start-time" value="${addDate(point.dateFrom, CALENDAR_FORMAT)}">
+      <input class="event__input  event__input--time" id="event-start-time-${point.id}" type="text" name="event-start-time" value="${addDate(point.dateFrom, DateFormat.CALENDAR)}" minlength='12' required>
       &mdash;
       <label class="visually-hidden" for="event-end-time-${point.id}">To</label>
-      <input class="event__input  event__input--time" id="event-end-time-${point.id}" type="text" name="event-end-time" value="${addDate(point.dateTo, CALENDAR_FORMAT)}">
+      <input class="event__input  event__input--time" id="event-end-time-${point.id}" type="text" name="event-end-time" value="${addDate(point.dateTo, DateFormat.CALENDAR)}" minlength='12' required>
     </div>
 
     <div class="event__field-group  event__field-group--price">
@@ -73,7 +73,7 @@ const createEventFormHeaderTemplate = (point, destinations, mode) => (
       <input class="event__input  event__input--price" id="event-price-${point.id}" type="number" name="event-price" value="${point.basePrice}" min="1" required>
     </div>
 
-    <button class="event__save-btn  btn  btn--blue" type="submit">${(point.isSaving) ? 'Saving...' : 'Save'}</button>
+    <button class="event__save-btn  btn  btn--blue" type="submit" ${(point.isSaving) ? 'disabled' : ''}>${(point.isSaving) ? 'Saving...' : 'Save'}</button>
       ${createButtons(mode, point.isDeleting)}
     </header>`
 );
@@ -141,7 +141,10 @@ export default class EventFormHeader extends AbstractStatefulView {
       defaultDate: this._state.dateTo,
       dateFormat: 'd/m/y H:i',
       onChange: this.#handleDateToChange,
-      ['time_24hr']: true
+      ['time_24hr']: true,
+      altInput: true,
+      altFormat: 'd/m/y H:i',
+      allowInput: true
     });
 
     this.#dateFromCalendar = flatpickr(this.element.querySelector('.event__input--time[name="event-start-time"]'), {
@@ -150,7 +153,8 @@ export default class EventFormHeader extends AbstractStatefulView {
       defaultDate: this._state.dateFrom,
       dateFormat: 'd/m/y H:i',
       onChange: this.#handleDateFromChange,
-      ['time_24hr']: true
+      ['time_24hr']: true,
+      allowInput: true
     });
   }
 
@@ -192,11 +196,15 @@ export default class EventFormHeader extends AbstractStatefulView {
 
   #saveChanges = (evt) => {
     evt.preventDefault();
-    const actionType = (this.#mode === ModeType.EDIT) ? UserAction.UPDATE_EVENT : UserAction.ADD_EVENT;
-    const updateType = getUpdateType(this.#point, this._state);
-    delete this._state.isDeleting;
-    delete this._state.isSaving;
-    this.#handleSubmit(actionType, updateType, this._state);
+    this.element.parentNode.reportValidity();
+    if (this.element.parentNode.checkValidity()) {
+      evt.target.setAttribute('disabled', true);
+      const actionType = (this.#mode === ModeType.EDIT) ? UserAction.UPDATE_EVENT : UserAction.ADD_EVENT;
+      const updateType = getUpdateType(this.#point, this._state);
+      delete this._state.isDeleting;
+      delete this._state.isSaving;
+      this.#handleSubmit(actionType, updateType, this._state);
+    }
   };
 
   #closeEventForm = (evt) => {
@@ -206,6 +214,7 @@ export default class EventFormHeader extends AbstractStatefulView {
 
   #deletePoint = (evt) => {
     evt.preventDefault();
+    evt.target.setAttribute('disabled', true);
     this.#handleDelete(this._state);
   };
 }

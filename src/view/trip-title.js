@@ -1,4 +1,4 @@
-import { DATE_FORMAT } from '../const.js';
+import { DateFormat } from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
 import { parseDate } from '../utils.js';
 
@@ -22,7 +22,7 @@ const renderDestinations = ({ firstDestination, secondDestination, lastDestinati
 };
 
 const renderDates = ({firstDate, secondDate}) => {
-  const dateFormat = DATE_FORMAT.split(' ').reverse().join(' ');
+  const dateFormat = DateFormat.DATE.split(' ').reverse().join(' ');
   return `${parseDate(firstDate, dateFormat)} - ${parseDate(secondDate, dateFormat)}`;
 };
 
