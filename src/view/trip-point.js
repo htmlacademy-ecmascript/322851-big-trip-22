@@ -1,4 +1,4 @@
-import { DATE_FORMAT, TIME_FORMAT, UpdateType, UserAction } from '../const.js';
+import { DateFormat, UpdateType, UserAction } from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
 import { evaluateDuration, parseDate } from '../utils.js';
 
@@ -17,16 +17,16 @@ const addFavoriteClass = (favoriteStatus) => (favoriteStatus) ? 'event__favorite
 
 const createTripPointTemplate = ({point, destination, offers}) => `<li class="trip-events__item">
   <div class="event">
-    <time class="event__date" datetime="2019-03-18">${parseDate(point.dateFrom, DATE_FORMAT)}</time>
+    <time class="event__date" datetime="2019-03-18">${parseDate(point.dateFrom, DateFormat.DATE)}</time>
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${point.type.toLowerCase()}.png" alt="Event type icon">
     </div>
     <h3 class="event__title">${point.type} ${destination.name}</h3>
     <div class="event__schedule">
       <p class="event__time">
-        <time class="event__start-time" datetime="${point.dateFrom}">${parseDate(point.dateFrom, TIME_FORMAT)}</time>
+        <time class="event__start-time" datetime="${point.dateFrom}">${parseDate(point.dateFrom, DateFormat.TIME)}</time>
         &mdash;
-        <time class="event__end-time" datetime="${point.dateTo}">${parseDate(point.dateTo, TIME_FORMAT)}</time>
+        <time class="event__end-time" datetime="${point.dateTo}">${parseDate(point.dateTo, DateFormat.TIME)}</time>
       </p>
       <p class="event__duration">${evaluateDuration(point.dateFrom, point.dateTo)}</p>
     </div>

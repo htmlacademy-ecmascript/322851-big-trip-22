@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration.js';
-import { DURATION_FORMAT, FilterType, SortingType } from './const';
+import { DateFormat, FilterType, SortingType } from './const';
 import customParseFormat from 'dayjs/plugin/customParseFormat.js';
 import isBetween from 'dayjs/plugin/isBetween';
 
@@ -14,11 +14,11 @@ const evaluateDuration = (dateFrom, dateTo) => {
   let tripDuration = dayjs.duration(dayjs(dateTo).diff(dayjs(dateFrom)));
   const daysCount = Math.floor(tripDuration.asDays());
   if (daysCount > 30) {
-    const format = DURATION_FORMAT.replace('DD[D] ', '');
+    const format = DateFormat.DURATION.replace('DD[D] ', '');
     tripDuration = tripDuration.format(format);
     return `${daysCount}D ${tripDuration}`;
   }
-  tripDuration = tripDuration.format(DURATION_FORMAT);
+  tripDuration = tripDuration.format(DateFormat.DURATION);
   return tripDuration.replace('00D 00H ', '').replace('00D ', '');
 };
 
