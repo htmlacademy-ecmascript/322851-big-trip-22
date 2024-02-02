@@ -1,4 +1,4 @@
-# [Проект «Большое путешествие»](https://htmlacademy-ecmascript.github.io/322851-big-trip-22/11/)
+# Проект «Большое путешествие»
 
 * Студент: [Сергей Волков](https://up.htmlacademy.ru/ecmascript/22/user/322851).
 * Наставник: [Юлия Волкова](https://htmlacademy.ru/profile/id423707).
