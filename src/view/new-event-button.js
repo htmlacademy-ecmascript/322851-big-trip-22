@@ -18,10 +18,10 @@ export default class NewEventButton extends AbstractStatefulView {
   }
 
   _restoreHandlers() {
-    this.element.addEventListener('click', this.#openEventForm);
+    this.element.addEventListener('click', this.#newEventButtonClickHandler);
   }
 
-  #openEventForm = (evt) => {
+  #newEventButtonClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleClick();
   };

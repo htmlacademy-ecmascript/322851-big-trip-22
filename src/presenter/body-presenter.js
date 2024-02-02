@@ -190,6 +190,7 @@ export default class BodyPresenter {
         remove(this.#sortViewComponent);
         this.#clearTripPoints();
         this.#renderErrorMessage();
+        this.#newEventButtonComponent.updateElement({ isDisabled: true });
         break;
     }
   };

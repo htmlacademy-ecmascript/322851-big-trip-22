@@ -40,7 +40,7 @@ export default class TripPointPresenter {
         offers: null
       };
       this.#createEventForm();
-      document.addEventListener('keydown', this.#handleEscKeyDown);
+      document.addEventListener('keydown', this.#escapeKeyDownHandler);
       render(this.#eventFormComponent, this.#tripPointsContainer, RenderPosition.AFTERBEGIN);
     } else {
       this.#content = content;
@@ -165,7 +165,7 @@ export default class TripPointPresenter {
 
   #openForm = () => {
     this.#replacePointToForm();
-    document.addEventListener('keydown', this.#handleEscKeyDown);
+    document.addEventListener('keydown', this.#escapeKeyDownHandler);
   };
 
   #closeForm = () => {
@@ -177,7 +177,7 @@ export default class TripPointPresenter {
       this.#formHeader.resetState();
       this.#formDetails.resetState();
     }
-    document.removeEventListener('keydown', this.#handleEscKeyDown);
+    document.removeEventListener('keydown', this.#escapeKeyDownHandler);
   };
 
   #replaceFormToPoint() {
@@ -191,7 +191,7 @@ export default class TripPointPresenter {
     replace(this.#eventFormComponent, this.#tripPointComponent);
   }
 
-  #handleEscKeyDown = (evt) => {
+  #escapeKeyDownHandler = (evt) => {
     if (isEscapeKey(evt)) {
       evt.preventDefault();
       this.#closeForm();

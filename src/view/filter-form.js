@@ -25,14 +25,14 @@ export default class FilterForm extends AbstractView {
     super();
     this.#filters = filters;
     this.#handleFilterChange = onFilterChange;
-    this.element.addEventListener('change', this.#changeFilter);
+    this.element.addEventListener('change', this.#filterInputChangeHandler);
   }
 
   get template() {
     return createFilterFormTemplate(this.#filters);
   }
 
-  #changeFilter = (evt) => {
+  #filterInputChangeHandler = (evt) => {
     evt.preventDefault();
     if (evt.target.tagName === 'INPUT') {
       this.#handleFilterChange(evt.target.dataset.filterType);
