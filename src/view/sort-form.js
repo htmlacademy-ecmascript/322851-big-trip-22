@@ -30,14 +30,14 @@ export default class SortForm extends AbstractView {
     super();
     this.#handleSortChange = onSortChange;
     this.#currentSortType = currentSortType;
-    this.element.addEventListener('change', this.#changeSortOrder);
+    this.element.addEventListener('change', this.#sortInputChangeHandler);
   }
 
   get template() {
     return createSortFormTemplate(this.#currentSortType);
   }
 
-  #changeSortOrder = (evt) => {
+  #sortInputChangeHandler = (evt) => {
     evt.preventDefault();
     if (evt.target.tagName === 'INPUT') {
       this.#handleSortChange(evt.target.dataset.sortType);

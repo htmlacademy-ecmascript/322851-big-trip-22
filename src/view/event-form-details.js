@@ -84,7 +84,7 @@ export default class EventFormDetails extends AbstractStatefulView {
 
   _restoreHandlers() {
     if (!this.#isOffersEmpty()) {
-      this.element.querySelector('.event__section--offers').addEventListener('change', this.#changeSelectedOffers);
+      this.element.querySelector('.event__section--offers').addEventListener('change', this.#offersCheckboxChangeHandler);
     }
   }
 
@@ -108,7 +108,7 @@ export default class EventFormDetails extends AbstractStatefulView {
     return currentOffers.offers.length === 0;
   }
 
-  #changeSelectedOffers = (evt) => {
+  #offersCheckboxChangeHandler = (evt) => {
     if (evt.target.tagName === 'INPUT') {
       const newPoint = {...this._state.point};
       if (evt.target.checked) {

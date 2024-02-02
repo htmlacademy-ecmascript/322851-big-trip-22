@@ -59,10 +59,10 @@ const createEventFormHeaderTemplate = (point, destinations, mode) => (
 
     <div class="event__field-group  event__field-group--time">
       <label class="visually-hidden" for="event-start-time-${point.id}">From</label>
-      <input class="event__input  event__input--time" id="event-start-time-${point.id}" type="text" name="event-start-time" value="${addDate(point.dateFrom, DateFormat.CALENDAR)}" minlength='12' required>
+      <input class="event__input  event__input--time" id="event-start-time-${point.id}" type="text" name="event-start-time" value="${addDate(point.dateFrom, DateFormat.CALENDAR)}" required>
       &mdash;
       <label class="visually-hidden" for="event-end-time-${point.id}">To</label>
-      <input class="event__input  event__input--time" id="event-end-time-${point.id}" type="text" name="event-end-time" value="${addDate(point.dateTo, DateFormat.CALENDAR)}" minlength='12' required>
+      <input class="event__input  event__input--time" id="event-end-time-${point.id}" type="text" name="event-end-time" value="${addDate(point.dateTo, DateFormat.CALENDAR)}" required>
     </div>
 
     <div class="event__field-group  event__field-group--price">
@@ -113,15 +113,16 @@ export default class EventFormHeader extends AbstractStatefulView {
   }
 
   _restoreHandlers() {
-    this.element.querySelector('.event__type-group').addEventListener('change', this.#changeTripType);
-    this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestination);
-    this.element.querySelector('.event__save-btn').addEventListener('click', this.#saveChanges);
-    this.element.querySelector('.event__input--price').addEventListener('change', this.#changePrice);
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#tripTypeInputChangeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationInputChangeHandler);
+    this.element.querySelector('.event__save-btn').addEventListener('click', this.#saveButtonClickHandler);
+    this.element.querySelector('.event__input--price').addEventListener('change', this.#priceInputChangeHandler);
+    this.element.querySelectorAll('.event__input--time').forEach((datepicker) => datepicker.addEventListener('keydown', this.#dateInputHandler));
     if (this.#mode === ModeType.EDIT) {
-      this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeEventForm);
-      this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deletePoint);
+      this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollupButtonClickHandler);
+      this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteButtonClickHandler);
     } else {
-      this.element.querySelector('.event__reset-btn').addEventListener('click', this.#closeEventForm);
+      this.element.querySelector('.event__reset-btn').addEventListener('click', this.#rollupButtonClickHandler);
     }
     this.#setCalendar();
   }
@@ -140,10 +141,8 @@ export default class EventFormHeader extends AbstractStatefulView {
       enableTime: true,
       defaultDate: this._state.dateTo,
       dateFormat: 'd/m/y H:i',
-      onChange: this.#handleDateToChange,
+      onChange: this.#dateToInputChangeHandler,
       ['time_24hr']: true,
-      altInput: true,
-      altFormat: 'd/m/y H:i',
       allowInput: true
     });
 
@@ -152,13 +151,13 @@ export default class EventFormHeader extends AbstractStatefulView {
       enableTime: true,
       defaultDate: this._state.dateFrom,
       dateFormat: 'd/m/y H:i',
-      onChange: this.#handleDateFromChange,
-      ['time_24hr']: true,
-      allowInput: true
+      onChange: this.#dateFromInputChangeHandler,
+      allowInput: true,
+      ['time_24hr']: true
     });
   }
 
-  #changeTripType = (evt) => {
+  #tripTypeInputChangeHandler = (evt) => {
     evt.preventDefault();
     if (evt.target.tagName === 'INPUT') {
       this.updateElement({type: evt.target.value.toLowerCase()});
@@ -166,19 +165,28 @@ export default class EventFormHeader extends AbstractStatefulView {
     }
   };
 
-  #handleDateToChange = ([dateTo]) => {
-    this._setState({dateTo: new Date(dateTo).toISOString()});
+  #dateInputHandler(evt) {
+    evt.preventDefault();
+  }
+
+  #dateToInputChangeHandler = ([dateTo]) => {
+    if (dateTo) {
+      this._setState({dateTo: new Date(dateTo).toISOString()});
+    }
   };
 
-  #handleDateFromChange = ([dateFrom]) => {
-    dateFrom = new Date(dateFrom).toISOString();
-    this.updateElement({
-      dateFrom: dateFrom
-    });
-    this.#dateToCalendar.set('minDate', dateFrom);
+  #dateFromInputChangeHandler = ([dateFrom]) => {
+    if (dateFrom) {
+      dateFrom = new Date(dateFrom).toISOString();
+      this.updateElement({
+        dateFrom: dateFrom
+      });
+      this.#dateToCalendar.set('minDate', dateFrom);
+    }
+
   };
 
-  #changeDestination = (evt) => {
+  #destinationInputChangeHandler = (evt) => {
     evt.preventDefault();
     if (evt.target.tagName === 'INPUT') {
       const newDestination = this.#destinations.find((destination) => destination.name === evt.target.value);
@@ -189,12 +197,12 @@ export default class EventFormHeader extends AbstractStatefulView {
     }
   };
 
-  #changePrice = (evt) => {
+  #priceInputChangeHandler = (evt) => {
     evt.preventDefault();
     this._setState({basePrice: evt.target.value});
   };
 
-  #saveChanges = (evt) => {
+  #saveButtonClickHandler = (evt) => {
     evt.preventDefault();
     this.element.parentNode.reportValidity();
     if (this.element.parentNode.checkValidity()) {
@@ -207,12 +215,12 @@ export default class EventFormHeader extends AbstractStatefulView {
     }
   };
 
-  #closeEventForm = (evt) => {
+  #rollupButtonClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleClick();
   };
 
-  #deletePoint = (evt) => {
+  #deleteButtonClickHandler = (evt) => {
     evt.preventDefault();
     evt.target.setAttribute('disabled', true);
     this.#handleDelete(this._state);
